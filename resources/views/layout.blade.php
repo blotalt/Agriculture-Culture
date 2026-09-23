@@ -11,6 +11,7 @@
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
     </script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
     :root {
@@ -438,13 +439,14 @@
     
 </head>
 
-<body>
-    @include('mainnav')
+<body
+    data-is-authenticated="{{ auth()->check() ? 'true' : 'false' }}"
+    data-user-name="{{ auth()->check() ? e(auth()->user()->name) : '' }}"
+>
     @yield('hero')
     <main>
         @yield('content')
     </main>
-    @include('footer')
 </body>
 
 </html>

@@ -1,178 +1,22 @@
 @extends('layout')
 
-@section('hero')
-<div class="bg-header-green text-white pb-5 pt-4">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-8">
-                <span class="section-label">Agriculture Updates</span>
-                <h1 class="display-5 fw-bold mt-1 mb-2">Rice Market News</h1>
-                <p class="text-white-50 lead fs-6">
-                    Latest updates from Cambodia's rice markets, farmers, and trade sector.
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection
-
 @section('content')
-<section class="py-5">
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-end mb-4">
-            <div>
-                <h2 class="fw-bold mb-1">Latest News</h2>
-                <p class="text-muted mb-0">
-                    Stories and updates from the KhmerRice community
-                </p>
-            </div>
-        </div>
-
-        {{-- <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            @forelse($posts as $post)
-                <div class="col">
-                    <article class="rice-card h-100 p-4">
-                        <span class="badge-type position-static d-inline-block mb-3">
-                            Market Update
-                        </span>
-
-                        <h4 class="fw-bold mb-2">{{ $post->title }}</h4>
-                        
-
-            @if($post->isTrending)
-            <span class="badge bg-danger mb-2">🔥 Trending</span>
-            @endif
-
-                          @if($post->image)
-                <img src="{{ asset('storage/'.$post->image) }}"
-                     class="img-fluid rounded mb-3"
-                     alt="{{ $post->title }}"
-                     style="height: 180px; width: 100%; object-fit: cover;">
-                @endif
-
-                        <p class="text-muted small mb-3">
-                            By {{ $post->user->name }} · {{ $post->created_at->format('M d, Y') }}
-                        </p>
-
-                        <p class="text-muted mb-3">
-                            {{ $post->body }}
-                        </p>
-
-                        <!-- I ADDED THIS FOR THE BUTTON VIEW -->
-                        <a href="{{ route('news.show', $post->id) }}" 
-   class="btn btn-success btn-sm rounded-pill px-3 mt-2">
-    View Details
-</a>
-
-                    </article>
-                </div>
-            @empty
-                <div class="col-12">
-                    <div class="rice-card p-5 text-center">
-                        <h4 class="fw-bold">No news posted yet</h4>
-                        <p class="text-muted mb-0">
-                            New rice market updates will appear here.
-                        </p>
-                    </div>
-                </div>
-            @endforelse
-        </div> --}}
-
-
-        <div class="row row-cols-1 g-4">
-    @forelse($posts as $post)
-        {{-- <div class="col">
-            <article class="rice-card h-100 p-4">
-                <span class="badge-type position-static d-inline-block mb-3">
-                    Market Update
-                </span>
-
-                @if($post->isTrending)
-                    <span class="badge bg-danger ms-2 mb-3">🔥 Trending</span>
-                @endif
-
-                <h4 class="fw-bold mb-2">{{ $post->title }}</h4>
-
-                @if($post->image)
-                    <img src="{{ asset('storage/'.$post->image) }}"
-                         class="img-fluid rounded mb-3"
-                         alt="{{ $post->title }}"
-                         style="max-height: 280px; width: 100%; object-fit: cover;">
-                @endif
-
-                <p class="text-muted small mb-3">
-                    By {{ $post->user->name }} · {{ $post->created_at->format('M d, Y') }}
-                </p>
-
-                <p class="text-muted mb-3">
-                    {{ Str::limit($post->body, 200) }}
-                </p>
-
-                <a href="{{ route('news.show', $post->id) }}"
-                   class="btn btn-success btn-sm rounded-pill px-3 mt-2">
-                    View Details
-                </a>
-            </article>
-        </div> --}}
-
-        <div class="col">
-    <article class="rice-card h-100 p-4">
-        <div class="row g-3 align-items-start">
-
-            {{-- LEFT: text content --}}
-            <div class="{{ $post->image ? 'col-md-8' : 'col-12' }}">
-                <span class="badge-type position-static d-inline-block mb-2">
-                    Market Update
-                </span>
-
-                @if($post->isTrending)
-                    <span class="badge bg-danger ms-2 mb-2">🔥 Trending</span>
-                @endif
-
-                <h4 class="fw-bold mb-2">{{ $post->title }}</h4>
-
-                <p class="text-muted small mb-3">
-                    By {{ $post->user->name }} · {{ $post->created_at->format('M d, Y') }}
-                </p>
-
-                <p class="text-muted mb-3">
-                    {{ Str::limit($post->body, 200) }}
-                </p>
-
-                <a href="{{ route('news.show', $post->id) }}"
-                   class="btn btn-success btn-sm rounded-pill px-3">
-                    View Details
-                </a>
-            </div>
-
-            
-            @if($post->image)
-                <div class="col-md-4">
-                    <img src="{{ asset('storage/'.$post->image) }}"
-                         class="img-fluid rounded"
-                         alt="{{ $post->title }}"
-                         style="height: 160px; width: 100%; object-fit: cover;">
-                </div>
-            @endif
-
-        </div>
-    </article>
-</div>
-    @empty
-        <div class="col-12">
-            <div class="rice-card p-5 text-center">
-                <h4 class="fw-bold">No news posted yet</h4>
-                <p class="text-muted mb-0">
-                    New rice market updates will appear here.
-                </p>
-            </div>
-        </div>
-    @endforelse
-</div>
-
-<div class="d-flex justify-content-center mt-5">
-    {{ $posts->links('pagination::bootstrap-5') }}
-</div>
+    <div
+        id="react-app"
+        data-page="news"
+        data-posts="{{ json_encode(
+            $posts->items() ? collect($posts->items())->map(function ($post) {
+                return [
+                    'id' => $post->id,
+                    'title' => $post->title,
+                    'body' => $post->body,
+                    'image' => $post->image,
+                    'isTrending' => (bool) $post->isTrending,
+                    'user' => ['name' => $post->user?->name ?? 'Unknown user'],
+                    'date' => $post->created_at?->format('M d, Y') ?? '',
+                ];
+            })->all() : [],
+            JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
+        ) }}">
     </div>
-</section>
 @endsection
