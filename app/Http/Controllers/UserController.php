@@ -41,8 +41,10 @@ public function login(Request $request)
         'loginname' => 'Invalid username or password',
     ]);
 }
-    public function logout(){
+    public function logout(Request $request){
         auth()->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect('/');
     }
 }

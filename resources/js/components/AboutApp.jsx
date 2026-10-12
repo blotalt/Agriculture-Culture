@@ -1,16 +1,17 @@
 import React from 'react';
+import CountUp from './CountUp.jsx';
 
 export default function AboutApp({ teamMembers = [] }) {
     return (
         <>
             <style>{`
                 .about-react-wrap {
-                    background: #faf6ee;
-                    color: #202020;
-                    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+                    background: var(--bg);
+                    color: var(--text);
+                    font-family: var(--font-body);
                 }
                 .about-react-wrap .hero-band {
-                    background: #1b4d22;
+                    background: var(--green);
                     color: white;
                     padding: 32px 0 28px;
                 }
@@ -20,14 +21,14 @@ export default function AboutApp({ teamMembers = [] }) {
                     padding: 0 24px;
                 }
                 .about-react-wrap .eyebrow {
-                    color: #f4c84f;
+                    color: var(--gold-light);
                     font-size: 0.78rem;
                     font-weight: 800;
                     letter-spacing: 0.1em;
                     text-transform: uppercase;
                 }
                 .about-react-wrap h1, .about-react-wrap h2, .about-react-wrap h3, .about-react-wrap h4, .about-react-wrap h5 {
-                    font-family: Georgia, "Times New Roman", serif;
+                    font-family: var(--font-heading);
                 }
                 .about-react-wrap h1 {
                     margin: 10px 0 8px;
@@ -56,25 +57,25 @@ export default function AboutApp({ teamMembers = [] }) {
                     gap: 18px;
                 }
                 .about-react-wrap .stat-card {
-                    background: #fff;
-                    border: 1px solid rgba(27,77,34,0.08);
+                    background: var(--surface);
+                    border: 1px solid rgba(var(--green-rgb), 0.08);
                     border-radius: 18px;
                     box-shadow: 0 10px 24px rgba(0,0,0,0.04);
                     padding: 24px 20px;
                     text-align: center;
                 }
                 .about-react-wrap .stat-value {
-                    color: #f4c84f;
+                    color: var(--gold-light);
                     font-size: 2rem;
                     font-weight: 800;
                     margin: 0 0 8px;
                 }
                 .about-react-wrap .stat-label {
-                    color: #6f6845;
+                    color: var(--text-muted);
                     margin: 0;
                 }
                 .about-react-wrap .text-block {
-                    color: #4d4d4d;
+                    color: var(--text-muted);
                     line-height: 1.8;
                     margin: 0 0 16px;
                 }
@@ -88,10 +89,10 @@ export default function AboutApp({ teamMembers = [] }) {
                     gap: 24px;
                 }
                 .about-react-wrap .team-card {
-                    background: white;
+                    background: var(--surface);
                     border-radius: 18px;
                     overflow: hidden;
-                    border: 1px solid rgba(27,77,34,0.08);
+                    border: 1px solid rgba(var(--green-rgb), 0.08);
                     box-shadow: 0 10px 24px rgba(0,0,0,0.04);
                 }
                 .about-react-wrap .team-card img {
@@ -105,12 +106,12 @@ export default function AboutApp({ teamMembers = [] }) {
                 }
                 .about-react-wrap .team-name {
                     margin: 0 0 6px;
-                    color: #1b4d22;
+                    color: var(--green-ink);
                     font-size: 1.5rem;
                 }
                 .about-react-wrap .team-role {
                     margin: 0 0 10px;
-                    color: #d89b00;
+                    color: var(--gold);
                     font-weight: 800;
                     letter-spacing: 0.04em;
                     text-transform: uppercase;
@@ -120,7 +121,7 @@ export default function AboutApp({ teamMembers = [] }) {
                     display: flex;
                     align-items: center;
                     gap: 8px;
-                    color: #6f6845;
+                    color: var(--text-muted);
                     font-size: 0.95rem;
                     margin: 0;
                 }
@@ -143,8 +144,8 @@ export default function AboutApp({ teamMembers = [] }) {
                 .about-react-wrap .icon-box {
                     width: 42px;
                     height: 42px;
-                    background: #eaf1eb;
-                    color: #1b4d22;
+                    background: var(--green-soft);
+                    color: var(--green-ink);
                     border-radius: 50%;
                     display: flex;
                     align-items: center;
@@ -155,23 +156,23 @@ export default function AboutApp({ teamMembers = [] }) {
                     margin: 0 0 4px;
                     font-size: 0.9rem;
                     font-weight: 800;
-                    color: #1b4d22;
+                    color: var(--green-ink);
                 }
                 .about-react-wrap .contact-value {
                     margin: 0;
-                    color: #4d4d4d;
+                    color: var(--text-muted);
                     line-height: 1.6;
                 }
                 .about-react-wrap .message-box {
-                    background: white;
+                    background: var(--surface);
                     border-radius: 18px;
                     padding: 30px;
-                    border: 1px solid rgba(27,77,34,0.08);
+                    border: 1px solid rgba(var(--green-rgb), 0.08);
                     box-shadow: 0 10px 24px rgba(0,0,0,0.04);
                 }
                 .about-react-wrap .field {
                     width: 100%;
-                    background: #f3ece0;
+                    background: var(--blue-soft);
                     border: none;
                     border-radius: 12px;
                     padding: 14px 16px;
@@ -184,8 +185,8 @@ export default function AboutApp({ teamMembers = [] }) {
                 }
                 .about-react-wrap .submit-btn {
                     width: 100%;
-                    background: #f4c84f;
-                    color: #1b4d22;
+                    background: var(--gold-light);
+                    color: var(--on-gold);
                     border: none;
                     border-radius: 12px;
                     padding: 14px 18px;
@@ -221,7 +222,7 @@ export default function AboutApp({ teamMembers = [] }) {
                 <section className="section">
                     <div className="mission-grid">
                         <div>
-                            <div className="eyebrow" style={{ color: '#d89b00' }}>Our Mission</div>
+                            <div className="eyebrow" style={{ color: 'var(--gold)' }}>Our Mission</div>
                             <h2 style={{ margin: '12px 0 18px', fontSize: 'clamp(2rem,3vw,2.7rem)' }}>Connecting Cambodia's Rice Economy</h2>
                             <p className="text-block">KhmerRice was established under the Ministry of Agriculture, Forestry and Fisheries of Cambodia to create a transparent, data-driven marketplace for the country's most important crop.</p>
                             <p className="text-block">We aggregate real-time price data from 25 provincial markets, maintain the national rice variety registry, and provide tools for farmers, millers, exporters, and researchers to make informed decisions.</p>
@@ -229,36 +230,39 @@ export default function AboutApp({ teamMembers = [] }) {
                         </div>
 
                         <div className="stat-panel">
-                            <div className="stat-card">
-                                <div className="stat-value">3.5M+</div>
+                            <div className="stat-card animate-fade-in-up hover-lift">
+                                <div className="stat-value"><CountUp value="3.5M+" /></div>
                                 <p className="stat-label">Farming Families</p>
                             </div>
-                            <div className="stat-card">
-                                <div className="stat-value">#1</div>
+                            <div className="stat-card animate-fade-in-up hover-lift">
+                                <div className="stat-value"><CountUp value="#1" /></div>
                                 <p className="stat-label">Best Rice</p>
                             </div>
-                            <div className="stat-card">
-                                <div className="stat-value">60+</div>
+                            <div className="stat-card animate-fade-in-up hover-lift">
+                                <div className="stat-value"><CountUp value="60+" /></div>
                                 <p className="stat-label">Export Countries</p>
                             </div>
-                            <div className="stat-card">
-                                <div className="stat-value">25</div>
+                            <div className="stat-card animate-fade-in-up hover-lift">
+                                <div className="stat-value"><CountUp value="25" /></div>
                                 <p className="stat-label">Provinces Covered</p>
                             </div>
                         </div>
                     </div>
                 </section>
 
+                {/* Team section (hidden)
                 <section className="section" style={{ paddingTop: 18 }}>
                     <div className="section-heading">
-                        <div className="eyebrow" style={{ color: '#d89b00' }}>The Team</div>
+                        <div className="eyebrow" style={{ color: 'var(--gold)' }}>The Team</div>
                         <h2 style={{ margin: '8px 0 0', fontSize: 'clamp(2rem,3vw,2.7rem)' }}>Built by Cambodian Web Designers</h2>
                     </div>
 
                     <div className="team-grid">
                         {teamMembers.map((member) => (
-                            <div className="team-card" key={member.name}>
-                                <img src={`/images/team_members_stuff/${member.image}`} alt={member.name} />
+                            <div className="team-card animate-fade-in-up hover-lift" key={member.name}>
+                */}
+                                {/* <img src={`/images/team_members_stuff/${member.image}`} alt={member.name} /> */}
+                {/*
                                 <div className="team-body">
                                     <h5 className="team-name">{member.name}</h5>
                                     <p className="team-role">{member.role}</p>
@@ -274,10 +278,11 @@ export default function AboutApp({ teamMembers = [] }) {
                         ))}
                     </div>
                 </section>
+                */}
 
                 <section className="section" style={{ paddingBottom: 0 }}>
                     <div className="section-heading">
-                        <div className="eyebrow" style={{ color: '#d89b00' }}>Get In Touch</div>
+                        <div className="eyebrow" style={{ color: 'var(--gold)' }}>Get In Touch</div>
                         <h2 style={{ margin: '8px 0 0', fontSize: 'clamp(2rem,3vw,2.7rem)' }}>Contact Us</h2>
                     </div>
 
@@ -336,8 +341,8 @@ export default function AboutApp({ teamMembers = [] }) {
                             </div>
                         </div>
 
-                        <div className="message-box">
-                            <h5 style={{ margin: '0 0 20px', fontSize: '1.8rem', color: '#1b4d22' }}>Send a Message</h5>
+                        <div className="message-box animate-fade-in-up">
+                            <h5 style={{ margin: '0 0 20px', fontSize: '1.8rem', color: 'var(--green-ink)' }}>Send a Message</h5>
                             <form action="#" method="POST">
                                 <input className="field" type="text" placeholder="Your name" required />
                                 <input className="field" type="email" placeholder="Email address" required />

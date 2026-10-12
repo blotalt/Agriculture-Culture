@@ -1,11 +1,106 @@
-/* @import 'tailwindcss';
+/* Bootstrap (loaded in layout.blade.php) provides the base styles, so Tailwind is loaded
+   without its Preflight reset. Bootstrap's unlayered rules win over these layered utilities. */
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities) source('..');
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
+/* The default Laravel welcome page isn't routed. */
+@source not '../views/welcome.blade.php';
+/* Bootstrap's collapse and ManageVarietiesApp's form row would otherwise get Tailwind's utilities. */
+@source not inline('collapse row-2');
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
-} */
+    /* `backwards` rather than `both`, so cards' own hover transforms apply once it ends. */
+    --animate-fade-in-up: fade-in-up 0.6s ease-out backwards;
 
+    @keyframes fade-in-up {
+        from {
+            opacity: 0;
+            transform: translateY(1.25rem);
+        }
+    }
+}
 
+/* Scroll reveal: the layout's script adds .js-reveal, then marks each element with
+   data-revealed as it scrolls into view. Until then its fade-in waits on the first frame.
+   A data attribute, not a class, so React re-renders can't remove it. */
+.js-reveal .animate-fade-in-up:not([data-revealed]) {
+    animation-play-state: paused;
+}
+
+/* Hover lift for content cards: the card rises (the same upward motion as fade-in-up),
+   its shadow deepens and a soft green outline appears. Opt in with class="hover-lift".
+   Kept outside Tailwind's layers and with a repeated class so the pages' own card styles
+   (unlayered, injected later) can't override it. */
+.hover-lift.hover-lift.hover-lift {
+    transition: transform 0.25s ease, box-shadow 0.25s ease, outline-color 0.25s ease;
+    outline: 2px solid transparent;
+    outline-offset: -1px;
+}
+
+@media (hover: hover) {
+    .hover-lift.hover-lift.hover-lift:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 32px rgba(var(--green-rgb), 0.18), 0 4px 10px rgba(0, 0, 0, 0.06);
+        outline-color: rgba(var(--green-rgb), 0.35);
+    }
+}
+
+/* Keyboard users get the same highlight on links that are cards. */
+.hover-lift.hover-lift.hover-lift:focus-visible {
+    outline-color: var(--green-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animate-fade-in-up {
+        animation: none;
+    }
+    .hover-lift.hover-lift.hover-lift:hover {
+        transform: none;
+    }
+}
+
+@media print {
+    .animate-fade-in-up {
+        animation: none;
+    }
+}
+
+/* Buttons: every button style gets the same quick feedback. Colours ease instead of snapping,
+   the button rises a little under the mouse and presses in when clicked. Matches class names
+   that start with btn- or end in -btn / -button, so new button styles pick it up too.
+   The movement uses `translate` and `scale` rather than `transform`, so it adds to a button's
+   own transform (like .play-button's centring) instead of replacing it. */
+:is(.btn, [class^='btn-'], [class*=' btn-'], [class$='-btn'], [class*='-btn '], [class$='-button'], [class*='-button ']):not(.btn-group, .btn-toolbar, .btn-check, .btn-close, [class*='leaflet']) {
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease,
+        box-shadow 0.15s ease, translate 0.15s ease, scale 0.1s ease;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    /* Text-style buttons only change colour. */
+    :is(.btn, [class^='btn-'], [class*=' btn-'], [class$='-btn'], [class*='-btn '], [class$='-button'], [class*='-button ']):not(.btn-group, .btn-toolbar, .btn-check, .btn-close, [class*='leaflet'], .btn-link, .text-btn, .sort-btn, :disabled, .disabled):hover {
+        translate: 0 -2px;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    :is(.btn, [class^='btn-'], [class*=' btn-'], [class$='-btn'], [class*='-btn '], [class$='-button'], [class*='-button ']):not(.btn-group, .btn-toolbar, .btn-check, .btn-close, [class*='leaflet'], :disabled, .disabled):active {
+        scale: 0.97;
+    }
+
+    /* Dropdowns: the search suggestions fade and slide down as they open. */
+    .search-suggest {
+        animation: dropdown-in 0.16s ease-out;
+    }
+}
+
+.suggestion-item {
+    transition: background-color 0.12s ease;
+}
+
+@keyframes dropdown-in {
+    from {
+        opacity: 0;
+        translate: 0 -6px;
+    }
+}

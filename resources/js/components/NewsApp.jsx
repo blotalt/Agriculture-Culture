@@ -1,16 +1,17 @@
 import React from 'react';
+import { t } from '../i18n.js';
 
-export default function NewsApp({ posts = [] }) {
+export default function NewsApp({ posts = [], pagination = { current: 1, last: 1 } }) {
     return (
         <>
             <style>{`
                 .news-react-wrap {
-                    background: #faf6ee;
-                    color: #202020;
-                    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+                    background: var(--bg);
+                    color: var(--text);
+                    font-family: var(--font-body);
                 }
                 .news-react-hero {
-                    background: #1b4d22;
+                    background: var(--green);
                     color: white;
                     padding: 36px 0 28px;
                 }
@@ -22,7 +23,7 @@ export default function NewsApp({ posts = [] }) {
                 .news-react-kicker {
                     display: inline-block;
                     background: rgba(255,255,255,0.12);
-                    color: #f4c84f;
+                    color: var(--gold-light);
                     border-radius: 999px;
                     padding: 6px 12px;
                     font-size: .75rem;
@@ -33,7 +34,7 @@ export default function NewsApp({ posts = [] }) {
                 .news-react-hero h1 {
                     margin: 12px 0 8px;
                     font-size: clamp(2.3rem, 4vw, 3rem);
-                    font-family: Georgia, "Times New Roman", serif;
+                    font-family: var(--font-heading);
                 }
                 .news-react-hero p {
                     margin: 0;
@@ -51,19 +52,19 @@ export default function NewsApp({ posts = [] }) {
                 .news-react-header h2 {
                     margin: 0 0 6px;
                     font-size: clamp(2rem, 3vw, 2.4rem);
-                    font-family: Georgia, "Times New Roman", serif;
+                    font-family: var(--font-heading);
                 }
                 .news-react-header p {
                     margin: 0;
-                    color: #6f6845;
+                    color: var(--text-muted);
                 }
                 .news-react-list {
                     display: grid;
                     gap: 18px;
                 }
                 .news-react-card {
-                    background: white;
-                    border: 1px solid rgba(27,77,34,.08);
+                    background: var(--surface);
+                    border: 1px solid rgba(var(--green-rgb), .08);
                     border-radius: 18px;
                     padding: 18px;
                     box-shadow: 0 12px 28px rgba(0,0,0,.04);
@@ -77,8 +78,8 @@ export default function NewsApp({ posts = [] }) {
                 .news-react-badge {
                     display: inline-flex;
                     align-items: center;
-                    background: #eff7ee;
-                    color: #1b4d22;
+                    background: var(--green-soft);
+                    color: var(--green-ink);
                     border-radius: 999px;
                     padding: 6px 10px;
                     font-size: .75rem;
@@ -88,22 +89,22 @@ export default function NewsApp({ posts = [] }) {
                 .news-react-card h3 {
                     margin: 0 0 8px;
                     font-size: 1.5rem;
-                    color: #1b4d22;
+                    color: var(--green-ink);
                 }
                 .news-react-meta {
                     margin: 0 0 12px;
-                    color: #6f6845;
+                    color: var(--text-muted);
                     font-size: .84rem;
                 }
                 .news-react-body {
                     margin: 0;
-                    color: #4b5563;
+                    color: var(--text-muted);
                     line-height: 1.7;
                 }
                 .news-react-button {
                     display: inline-block;
                     margin-top: 14px;
-                    background: #1b4d22;
+                    background: var(--green);
                     color: white;
                     padding: 10px 18px;
                     border-radius: 999px;
@@ -120,46 +121,47 @@ export default function NewsApp({ posts = [] }) {
                 .news-react-empty {
                     padding: 44px 18px;
                     text-align: center;
-                    color: #6f6845;
-                    background: white;
-                    border: 1px dashed rgba(27,77,34,.22);
+                    color: var(--text-muted);
+                    background: var(--surface);
+                    border: 1px dashed rgba(var(--green-rgb), .22);
                     border-radius: 18px;
                 }
+                .news-react-pages{display:flex;gap:8px;justify-content:center;margin-top:28px;flex-wrap:wrap;}.news-react-pages a{min-width:40px;text-align:center;padding:8px 12px;border-radius:10px;background:var(--surface);border:1px solid var(--border);color:var(--green-ink);text-decoration:none;font-weight:700;}.news-react-pages a.active{background:var(--green);color:white;border-color:var(--green);}
                 @media(max-width:760px){.news-react-row{grid-template-columns:1fr;}.news-react-image{height:200px;}}
             `}</style>
 
             <div className="news-react-wrap">
                 <section className="news-react-hero">
                     <div className="news-react-inner">
-                        <span className="news-react-kicker">Agriculture Updates</span>
-                        <h1>Rice Market News</h1>
-                        <p>Latest updates from Cambodia&apos;s rice markets, farmers, and trade sector.</p>
+                        <span className="news-react-kicker">{t('news.kicker')}</span>
+                        <h1>{t('news.title')}</h1>
+                        <p>{t('news.subtitle')}</p>
                     </div>
                 </section>
 
                 <section className="news-react-content">
                     <div className="news-react-header">
-                        <h2>Latest News</h2>
-                        <p>Stories and updates from the KhmerRice community</p>
+                        <h2>{t('news.latest')}</h2>
+                        <p>{t('news.latestSub')}</p>
                     </div>
 
                     <div className="news-react-list">
                         {posts.length === 0 ? (
                             <div className="news-react-empty">
-                                <h3 style={{ margin: '0 0 10px', color: '#1b4d22' }}>No news posted yet</h3>
-                                <p style={{ margin: 0 }}>New rice market updates will appear here.</p>
+                                <h3 style={{ margin: '0 0 10px', color: 'var(--green-ink)' }}>{t('news.empty')}</h3>
+                                <p style={{ margin: 0 }}>{t('news.emptySub')}</p>
                             </div>
                         ) : (
                             posts.map((post) => (
-                                <article key={post.id} className="news-react-card">
+                                <article key={post.id} className="news-react-card animate-fade-in-up hover-lift">
                                     <div className="news-react-row">
                                         <div>
-                                            <span className="news-react-badge">Market Update</span>
-                                            {post.isTrending ? <span style={{ marginLeft: 8, background: '#ffe5e5', color: '#b42318', borderRadius: 999, padding: '5px 10px', fontSize: '.72rem', fontWeight: 800 }}>🔥 Trending</span> : null}
+                                            <span className="news-react-badge">{t('news.badge')}</span>
+                                            {post.isTrending ? <span style={{ marginLeft: 8, background: 'var(--danger-soft)', color: 'var(--danger)', borderRadius: 999, padding: '5px 10px', fontSize: '.72rem', fontWeight: 800 }}>🔥 {t('common.trending')}</span> : null}
                                             <h3>{post.title}</h3>
-                                            <p className="news-react-meta">By {post.user?.name || 'Unknown user'} · {post.date}</p>
+                                            <p className="news-react-meta">{t('common.by')} {post.user?.name || t('common.unknownUser')} · {post.date} · 👁 {post.views ?? 0} · 💬 {post.comments ?? 0}</p>
                                             <p className="news-react-body">{post.body.slice(0, 200)}{post.body.length > 200 ? '...' : ''}</p>
-                                            <a className="news-react-button" href={`/news/${post.id}`}>View Details</a>
+                                            <a className="news-react-button" href={`/news/${post.id}`}>{t('variety.details')}</a>
                                         </div>
 
                                         {post.image ? (
@@ -170,6 +172,21 @@ export default function NewsApp({ posts = [] }) {
                             ))
                         )}
                     </div>
+
+                    {pagination.last > 1 ? (
+                        <nav className="news-react-pages" aria-label="Pages">
+                            {Array.from({ length: pagination.last }, (_, index) => (
+                                <a
+                                    key={index + 1}
+                                    href={`/news?page=${index + 1}`}
+                                    className={index + 1 === pagination.current ? 'active' : ''}
+                                    aria-current={index + 1 === pagination.current ? 'page' : undefined}
+                                >
+                                    {index + 1}
+                                </a>
+                            ))}
+                        </nav>
+                    ) : null}
                 </section>
             </div>
         </>

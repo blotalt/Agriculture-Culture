@@ -15,7 +15,7 @@ use Tests\TestCase;
 */
 
 pest()->extend(TestCase::class)
- // ->use(RefreshDatabase::class)
+    ->use(RefreshDatabase::class)
     ->in('Feature');
 
 /*
@@ -44,7 +44,46 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function admin(): App\Models\User
 {
-    // ..
+    $user = App\Models\User::factory()->create();
+    $user->forceFill(['is_admin' => true])->save();
+
+    return $user;
+}
+
+function marketPrice(array $overrides = []): App\Models\MarketPrice
+{
+    return App\Models\MarketPrice::create($overrides + [
+        'rice_variety' => 'Phka Rumduol',
+        'rice_type' => 'Jasmine',
+        'province' => 'Takeo',
+        'market' => 'Takeo Central',
+        'price_per_kg' => 0.50,
+        'recorded_on' => '2026-09-01',
+    ]);
+}
+
+function variety(array $overrides = []): App\Models\Variety
+{
+    return App\Models\Variety::create($overrides + [
+        'name' => 'Phka Rumduol',
+        'khmer_name' => 'ផ្ការំដួល',
+        'type' => 'Jasmine',
+        'location' => 'Battambang',
+        'yield' => '3.5 - 4 t/ha',
+        'cycle' => '130 - 140 days',
+        'season' => 'Wet season',
+        'demand' => 'Very High',
+        'user_id' => App\Models\User::factory()->create()->id,
+    ]);
+}
+
+function post(App\Models\User $author, array $overrides = []): App\Models\Post
+{
+    return App\Models\Post::create($overrides + [
+        'title' => 'Rice prices rise in Takeo',
+        'body' => 'Jasmine paddy prices climbed this week.',
+        'user_id' => $author->id,
+    ]);
 }

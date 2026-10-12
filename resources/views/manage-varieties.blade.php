@@ -5,7 +5,7 @@
         id="react-app"
         data-page="manage-varieties"
         data-csrf="{{ csrf_token() }}"
-        data-my-varieties='@json($myVarieties->map(function ($item) { return [
+        data-my-varieties='{{ json_encode($myVarieties->map(function ($item) { return [
             "id" => $item->id,
             "name" => $item->name,
             "khmer_name" => $item->khmer_name,
@@ -17,6 +17,6 @@
             "season" => $item->season,
             "demand" => $item->demand,
             "image" => $item->image,
-        ]; })->all())'>
+        ]; })->all()) }}'>
     </div>
 @endsection

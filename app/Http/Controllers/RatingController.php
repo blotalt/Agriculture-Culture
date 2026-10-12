@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use App\Models\Rating;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,7 @@ class RatingController extends Controller
 
     Rating::updateOrCreate(
         [
-            'post_id' => $id,
+            'post_id' => Post::findOrFail($id)->id,
             'user_id' => auth()->id()
         ],
         [

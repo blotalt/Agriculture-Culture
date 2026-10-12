@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Post;
+use App\Services\ImageOptimizer;
 
 class PostController extends Controller
 {
@@ -23,7 +25,7 @@ class PostController extends Controller
 
 
     if ($request->hasFile('image')) {
-        $incomingFields['image'] = $request->file('image')->store('posts', 'public');
+        $incomingFields['image'] = app(ImageOptimizer::class)->store($request->file('image'), 'posts');
     }
 
         Post::create($incomingFields);
@@ -32,13 +34,13 @@ class PostController extends Controller
     }
         public function news()
             {
-                $posts = Post::with('user')->orderByDesc('isTrending')->latest()->paginate(9);
+                $posts = Post::with('user')->withCount('comments')->orderByDesc('isTrending')->latest()->paginate(9);
                 return view('news', ['posts' => $posts]);
             }
 
     public function showEditScreen(Post $post)
     {
-        if (auth()->user()->id !== $post->user_id) {
+        if (! auth()->user()->canManage($post)) {
             return redirect('/');
         }
 
@@ -47,7 +49,7 @@ class PostController extends Controller
 
     public function updatePost(Post $post, Request $request)
     {
-        if (auth()->user()->id !== $post->user_id) {
+        if (! auth()->user()->canManage($post)) {
             return redirect('/dashboard');
         }
 
@@ -62,7 +64,8 @@ class PostController extends Controller
 
          $incomingFields['isTrending'] = $request->has('isTrending');
          if ($request->hasFile('image')) {
-        $incomingFields['image'] = $request->file('image')->store('posts', 'public');
+        if ($post->image) { Storage::disk('public')->delete($post->image); }
+        $incomingFields['image'] = app(ImageOptimizer::class)->store($request->file('image'), 'posts');
     }
 
         $post->update($incomingFields);
@@ -72,26 +75,11 @@ class PostController extends Controller
 
     public function deletePost(Post $post)
     {
-        if (auth()->user()->id === $post->user_id) {
+        if (auth()->user()->canManage($post)) {
+            if ($post->image) { Storage::disk('public')->delete($post->image); }
             $post->delete();
         }
 
         return redirect('/dashboard');
     }
-    public function show($id)
-{
-    $post = Post::with(['user', 'comments.user'])->findOrFail($id);
-
-    $post->userRating = auth()->check()
-        ? \App\Models\Rating::where('post_id', $post->id)
-            ->where('user_id', auth()->id())
-            ->value('rating')
-        : 0;
-
-    $post->avgRating = \App\Models\Rating::where('post_id', $post->id)
-        ->avg('rating');
-
-    return view('news.show', compact('post'));
-}
-
 }
