@@ -1,13 +1,10 @@
-import React, { useMemo, useState } from 'react';
-
-const suggestionCatalog = [
-    { label: 'Phka Rumduol', meta: 'Jasmine' },
-    { label: 'Sen Kra Ob', meta: 'Variety' },
-    { label: 'Neab Dam', meta: 'Local' },
-    { label: 'Angkor Damnaeb', meta: 'Premium' },
-    { label: 'Rice market prices', meta: 'Latest' },
-    { label: 'Cambodia farmers', meta: 'News' },
-];
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Bell, CalendarDays, CircleUser, Coins, Flag, GraduationCap, House, Info, MoonStar, Newspaper, Sprout, Sun, Wheat } from 'lucide-react';
+import MobileHeader from './MobileHeader.jsx';
+import useIsMobile from '../hooks/useIsMobile.js';
+import { t, getLocale } from '../i18n.js';
+// Phone-only styles for the whole site (the mobile header, tap targets, spacing).
+import '../../css/mobile.css';
 
 export default function SiteShellApp({
     userName = '',
@@ -17,12 +14,28 @@ export default function SiteShellApp({
     csrfToken = '',
 }) {
     const navItems = [
-        { label: 'Home', href: '/home' },
-        { label: 'Varieties', href: '/variety' },
-        { label: 'Prices', href: '/pricemarket' },
-        { label: 'News', href: '/news' },
-        { label: 'About', href: '/about' },
-        { label: 'Dashboard', href: '/dashboard' },
+        { label: t('nav.home'), href: '/home' },
+        { label: t('nav.varieties'), href: '/variety' },
+        { label: t('nav.prices'), href: '/pricemarket' },
+        { label: t('nav.news'), href: '/news' },
+        { label: t('nav.learn'), href: '/learn' },
+        { label: t('nav.about'), href: '/about' },
+    ];
+    const locale = getLocale();
+    const isAdmin = document.body.dataset.isAdmin === 'true';
+    const isMobile = useIsMobile();
+
+    // The phone menu has room for the pages the desktop bar only links from the footer.
+    const mobileLinks = [
+        { ...navItems[0], Icon: House },
+        { ...navItems[1], Icon: Wheat },
+        { ...navItems[2], Icon: Coins },
+        { label: t('nav.calendar'), href: '/calendar', Icon: CalendarDays },
+        { label: t('nav.recommend'), href: '/variety/recommend', Icon: Sprout },
+        { ...navItems[3], Icon: Newspaper },
+        { ...navItems[4], Icon: GraduationCap },
+        { ...navItems[5], Icon: Info },
+        { label: t('nav.alerts'), href: '/alerts', Icon: Bell },
     ];
 
     const isActive = (href) => {
@@ -42,43 +55,137 @@ export default function SiteShellApp({
             return currentPath.startsWith('/news');
         }
 
-        if (href === '/about') {
-            return currentPath === '/about';
+        if (href === '/calendar') {
+            return currentPath.startsWith('/calendar');
         }
 
-        if (href === '/dashboard') {
-            return currentPath === '/dashboard';
+        if (href === '/variety/recommend') {
+            return currentPath.startsWith('/variety/recommend');
+        }
+
+        if (href === '/alerts') {
+            return currentPath.startsWith('/alerts');
+        }
+
+        if (href === '/learn') {
+            return currentPath.startsWith('/learn');
+        }
+
+        if (href === '/about') {
+            return currentPath === '/about';
         }
 
         return false;
     };
 
+    // Light / dark theme. The layout's <head> script already applied the saved or device choice.
+    const [theme, setTheme] = useState(() => document.documentElement.dataset.theme || 'light');
+    const toggleTheme = () => {
+        const next = theme === 'dark' ? 'light' : 'dark';
+        const root = document.documentElement;
+        root.classList.add('theme-switching');
+        root.dataset.theme = next;
+        root.dataset.bsTheme = next;
+        try { localStorage.setItem('theme', next); } catch (e) { /* private mode: still switches for this page */ }
+        setTimeout(() => root.classList.remove('theme-switching'), 350);
+        setTheme(next);
+    };
+
     const [query, setQuery] = useState('');
+    const [suggestionResults, setSuggestionResults] = useState([]);
 
-    const suggestionResults = useMemo(() => {
-        const term = query.trim().toLowerCase();
-        if (!term) return [];
+    // Live suggestions from the server, fetched shortly after the user stops typing.
+    useEffect(() => {
+        const term = query.trim();
+        if (!term) {
+            setSuggestionResults([]);
+            return undefined;
+        }
 
-        return suggestionCatalog.filter((item) => {
-            const text = `${item.label} ${item.meta}`.toLowerCase();
-            return text.includes(term);
-        }).slice(0, 5);
+        const controller = new AbortController();
+        const timer = setTimeout(() => {
+            fetch(`/search/suggest?q=${encodeURIComponent(term)}`, { signal: controller.signal, headers: { Accept: 'application/json' } })
+                .then((response) => (response.ok ? response.json() : []))
+                .then((items) => setSuggestionResults(items.slice(0, 8)))
+                .catch(() => {});
+        }, 200);
+
+        return () => {
+            clearTimeout(timer);
+            controller.abort();
+        };
     }, [query]);
+
+    // The nav is position: fixed. The space it covers from the top of the window (the gap above it plus
+    // its height, which grows when it wraps onto more rows on narrow screens) is kept in
+    // --site-nav-height, so the header holds that space in the page and anchor jumps land below the nav.
+    // navRef points at whichever header is showing (desktop nav or phone bar), so this re-runs on a swap.
+    const navRef = useRef(null);
+    useLayoutEffect(() => {
+        const nav = navRef.current;
+        if (!nav) return undefined;
+        const setHeight = () => {
+            const top = parseFloat(getComputedStyle(nav).top) || 0;
+            document.documentElement.style.setProperty('--site-nav-height', `${nav.offsetHeight + top}px`);
+        };
+        setHeight();
+        const observer = new ResizeObserver(setHeight);
+        observer.observe(nav);
+        return () => observer.disconnect();
+    }, [isMobile]);
+
+    // Shadow once the page scrolls under the nav. On phones the nav is several rows tall, so it
+    // slides away while scrolling down and comes back when scrolling up.
+    const [scrolled, setScrolled] = useState(false);
+    const [navHidden, setNavHidden] = useState(false);
+    useEffect(() => {
+        let lastY = window.scrollY;
+        const onScroll = () => {
+            const y = window.scrollY;
+            setScrolled(y > 0);
+            if (Math.abs(y - lastY) < 8) return;
+            const nav = navRef.current;
+            if (!nav) return;
+            setNavHidden(y > lastY && y > nav.offsetHeight && !nav.contains(document.activeElement));
+            lastY = y;
+        };
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => window.removeEventListener('scroll', onScroll);
+    }, []);
 
     return (
         <>
             <style>{`
                 .site-shell-react {
-                    color: #202020;
-                    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+                    color: var(--text);
+                    font-family: var(--font-body);
                 }
                 .site-shell-react .bg-header-green {
-                    background-color: #1b4d22 !important;
+                    background-color: var(--green) !important;
+                }
+                html {
+                    scroll-padding-top: calc(var(--site-nav-height, 0px) + 16px);
+                }
+                /* The nav floats: it sits --site-nav-gap below the top of the window and takes 90% of the width. */
+                .site-shell-react.site-header {
+                    --site-nav-gap: 14px;
+                    height: calc(var(--site-nav-height, 88px) + var(--site-nav-gap));
+                    background: transparent;
                 }
                 .site-shell-react .site-nav {
-                    background: #1b4d22;
+                    position: fixed;
+                    top: var(--site-nav-gap);
+                    left: 5%;
+                    right: 5%;
+                    /* Above page content (z-index up to 10), below the z-index 20 modal backdrops. */
+                    z-index: 15;
+                    background: var(--green);
                     color: white;
-                    width: 100%;
+                    transition: box-shadow 0.25s ease, transform 0.3s ease;
+                }
+                .site-shell-react .site-nav.is-scrolled {
+                    box-shadow: 0 8px 24px rgba(0,0,0,0.14);
                 }
                 .site-shell-react .site-nav-inner {
                     max-width: 1180px;
@@ -97,17 +204,14 @@ export default function SiteShellApp({
                     text-decoration: none;
                 }
                 .site-shell-react .brand-mark {
-                    width: 32px;
-                    height: 32px;
-                    border-radius: 50%;
-                    background: #f4c84f;
-                    display: grid;
-                    place-items: center;
-                    font-size: 1.2rem;
+                    width: 44px;
+                    height: 44px;
+                    display: block;
+                    flex-shrink: 0;
                 }
                 .site-shell-react .brand-name {
                     display: block;
-                    font-family: Georgia, "Times New Roman", serif;
+                    font-family: var(--font-heading);
                     font-size: 1.2rem;
                     font-weight: 700;
                     line-height: 1.1;
@@ -118,6 +222,7 @@ export default function SiteShellApp({
                     letter-spacing: 0.08em;
                     opacity: 0.7;
                     text-transform: uppercase;
+                    white-space: nowrap;
                 }
                 .site-shell-react .nav-links {
                     display: flex;
@@ -131,6 +236,7 @@ export default function SiteShellApp({
                 }
                 .site-shell-react .nav-link-item a {
                     color: rgba(255,255,255,0.8);
+                    white-space: nowrap;
                     text-decoration: none;
                     font-weight: 500;
                     padding-bottom: 6px;
@@ -140,7 +246,7 @@ export default function SiteShellApp({
                 .site-shell-react .nav-link-item a.active,
                 .site-shell-react .nav-link-item a:hover {
                     color: white;
-                    border-color: #cca01d;
+                    border-color: var(--gold);
                 }
                 .site-shell-react .nav-actions {
                     display: flex;
@@ -149,7 +255,7 @@ export default function SiteShellApp({
                     flex-wrap: wrap;
                 }
                 .site-shell-react .nav-search {
-                    min-width: 220px;
+                    min-width: 200px;
                     position: relative;
                 }
                 .site-shell-react .nav-search input {
@@ -170,8 +276,8 @@ export default function SiteShellApp({
                     left: 0;
                     right: 0;
                     z-index: 20;
-                    background: white;
-                    border: 1px solid rgba(27,77,34,0.1);
+                    background: var(--surface);
+                    border: 1px solid rgba(var(--green-rgb), 0.1);
                     border-radius: 8px;
                     box-shadow: 0 14px 28px rgba(0,0,0,0.08);
                     overflow: hidden;
@@ -179,21 +285,21 @@ export default function SiteShellApp({
                 .site-shell-react .suggestion-item {
                     width: 100%;
                     border: none;
-                    background: white;
+                    background: var(--surface);
                     padding: 10px 12px;
                     text-align: left;
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
                     gap: 12px;
-                    color: #202020;
+                    color: var(--text);
                     cursor: pointer;
                 }
                 .site-shell-react .suggestion-item:hover {
-                    background: #f4efe6;
+                    background: var(--blue-soft);
                 }
                 .site-shell-react .suggestion-meta {
-                    color: #6f6845;
+                    color: var(--text-muted);
                     font-size: 0.7rem;
                     text-transform: uppercase;
                     letter-spacing: 0.06em;
@@ -209,16 +315,44 @@ export default function SiteShellApp({
                     justify-content: center;
                 }
                 .site-shell-react .nav-button.gold {
-                    background: #cca01d;
+                    background: var(--gold);
                     color: white;
                 }
                 .site-shell-react .nav-button.light {
                     color: white;
                     text-decoration: none;
                 }
+                .site-shell-react .nav-button.icon {
+                    padding: 6px 6px;
+                    font-size: 1rem;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                .site-shell-react .lang-switch {
+                    border: 1px solid rgba(255,255,255,0.35);
+                    padding: 5px 10px;
+                }
+                .site-shell-react .theme-switch {
+                    border: 1px solid rgba(255,255,255,0.35);
+                    background: transparent;
+                    color: var(--gold-light);
+                    width: 34px;
+                    height: 34px;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                }
                 .site-shell-react .welcome-text {
                     color: rgba(255,255,255,0.9);
                     font-size: 0.85rem;
+                    white-space: nowrap;
+                }
+                .site-shell-react .user-chip {
+                    display: none;
+                    align-items: center;
+                    color: rgba(255,255,255,0.9);
                 }
                 .site-shell-react .logout-form button {
                     background: transparent;
@@ -228,9 +362,20 @@ export default function SiteShellApp({
                     padding: 6px 12px;
                     font-size: 0.8rem;
                     cursor: pointer;
+                    white-space: nowrap;
+                }
+                /* Desktop: the bar's content is capped at 1180px, and a signed-in bar has more buttons than a guest's,
+                   so at every desktop width the welcome text becomes an icon and the gaps tighten, to keep one row. */
+                @media (min-width: 901px) {
+                    .site-shell-react .site-nav-inner { gap: 12px; }
+                    .site-shell-react .nav-links { gap: 14px; }
+                    .site-shell-react .nav-actions { gap: 8px; }
+                    .site-shell-react .nav-search { min-width: 0; width: 180px; }
+                    .site-shell-react .welcome-text { display: none; }
+                    .site-shell-react .user-chip { display: inline-flex; }
                 }
                 .site-shell-react .site-footer {
-                    background: #1b4d22;
+                    background: var(--green);
                     color: #fff;
                     padding: 42px 0 18px;
                     margin-top: 32px;
@@ -252,16 +397,13 @@ export default function SiteShellApp({
                     margin-bottom: 12px;
                 }
                 .site-shell-react .footer-brand-mark {
-                    width: 40px;
-                    height: 40px;
-                    border-radius: 50%;
-                    background: #f4c84f;
-                    display: grid;
-                    place-items: center;
-                    font-size: 1.2rem;
+                    width: 46px;
+                    height: 46px;
+                    display: block;
+                    flex-shrink: 0;
                 }
                 .site-shell-react .footer-title {
-                    color: #f4c84f;
+                    color: var(--gold-light);
                     text-transform: uppercase;
                     letter-spacing: 0.08em;
                     font-size: 0.78rem;
@@ -288,10 +430,10 @@ export default function SiteShellApp({
                     display: flex;
                     gap: 14px;
                     margin-top: 18px;
-                    color: #f4c84f;
+                    color: var(--gold-light);
                 }
                 .site-shell-react .socials a {
-                    color: #f4c84f;
+                    color: var(--gold-light);
                     text-decoration: none;
                     font-size: 1.1rem;
                 }
@@ -328,17 +470,43 @@ export default function SiteShellApp({
                         width: 100%;
                         justify-content: center;
                     }
+                    .site-shell-react .site-nav.is-hidden:not(:focus-within) {
+                        /* Also clear the gap above it and its shadow, so no sliver stays on screen. */
+                        transform: translateY(calc(-100% - var(--site-nav-gap) - 32px));
+                    }
                     .site-shell-react .footer-grid {
                         grid-template-columns: 1fr;
                     }
                 }
+                @media (prefers-reduced-motion: reduce) {
+                    .site-shell-react .site-nav { transition: none; }
+                }
+                @media print {
+                    .site-shell-react.site-header { height: auto; }
+                    .site-shell-react .site-nav { position: static; box-shadow: none; }
+                }
             `}</style>
 
-            <header className="site-shell-react">
-                <div className="site-nav">
+            <header className={`site-shell-react site-header${isMobile ? ' is-mobile' : ''}`}>
+                {isMobile ? (
+                    <MobileHeader
+                        ref={navRef}
+                        links={mobileLinks}
+                        isActive={isActive}
+                        locale={locale}
+                        theme={theme}
+                        onToggleTheme={toggleTheme}
+                        isGuest={isGuest}
+                        isAdmin={isAdmin}
+                        userName={userName}
+                        csrfToken={csrfToken}
+                        scrolled={scrolled}
+                    />
+                ) : (
+                <div ref={navRef} className={`site-nav${scrolled ? ' is-scrolled' : ''}${navHidden ? ' is-hidden' : ''}`}>
                     <div className="site-nav-inner">
                         <a className="brand" href="/home">
-                            <div className="brand-mark">🌾</div>
+                            <img className="brand-mark" src="/icons/logo-mark.svg" alt="" width="44" height="44" />
                             <div>
                                 <span className="brand-name">KhmerRice</span>
                                 <small className="brand-sub">Cambodia Market</small>
@@ -359,7 +527,8 @@ export default function SiteShellApp({
                                     <input
                                         type="text"
                                         name="q"
-                                        placeholder="Search rice..."
+                                        placeholder={t('nav.searchShort')}
+                                        aria-label={t('nav.search')}
                                         autoComplete="off"
                                         value={query}
                                         onChange={(event) => setQuery(event.target.value)}
@@ -369,7 +538,7 @@ export default function SiteShellApp({
                                         <div className="search-suggest">
                                             {suggestionResults.map((item) => (
                                                 <button
-                                                    key={item.label}
+                                                    key={`${item.kind}-${item.label}`}
                                                     type="button"
                                                     className="suggestion-item"
                                                     onClick={(event) => {
@@ -379,7 +548,7 @@ export default function SiteShellApp({
                                                     }}
                                                 >
                                                     <span>{item.label}</span>
-                                                    <span className="suggestion-meta">{item.meta}</span>
+                                                    <span className="suggestion-meta">{item.kind === 'news' ? t('nav.news') : item.meta}</span>
                                                 </button>
                                             ))}
                                         </div>
@@ -387,23 +556,52 @@ export default function SiteShellApp({
                                 </form>
                             </div>
 
+                            <a
+                                href={`/locale/${locale === 'km' ? 'en' : 'km'}`}
+                                className="nav-button light lang-switch"
+                                lang={locale === 'km' ? 'en' : 'km'}
+                                title={locale === 'km' ? 'Switch to English' : 'ប្ដូរទៅភាសាខ្មែរ'}
+                            >
+                                {locale === 'km' ? 'EN' : 'ខ្មែរ'}
+                            </a>
+
+                            <button
+                                type="button"
+                                className="nav-button light icon theme-switch"
+                                onClick={toggleTheme}
+                                aria-pressed={theme === 'dark'}
+                                title={theme === 'dark'
+                                    ? (locale === 'km' ? 'ប្ដូរទៅរបៀបភ្លឺ' : 'Switch to light mode')
+                                    : (locale === 'km' ? 'ប្ដូរទៅរបៀបងងឹត' : 'Switch to dark mode')}
+                                aria-label={locale === 'km' ? 'របៀបងងឹត' : 'Dark mode'}
+                            >
+                                {theme === 'dark' ? <Sun size={16} aria-hidden="true" /> : <MoonStar size={16} aria-hidden="true" />}
+                            </button>
+
                             {isGuest ? (
                                 <>
-                                    <a href="/signup" className="nav-button light">Sign Up</a>
-                                    <a href="/login" className="nav-button gold">Login</a>
+                                    <a href="/signup" className="nav-button light">{t('nav.signup')}</a>
+                                    <a href="/login" className="nav-button gold">{t('nav.login')}</a>
                                 </>
                             ) : (
                                 <>
-                                    <span className="welcome-text">Welcome, {userName}</span>
+                                    <a href="/alerts" className="nav-button light icon" title={t('nav.alerts')} aria-label={t('nav.alerts')}><Bell size={16} aria-hidden="true" /></a>
+                                    {isAdmin ? <a href="/admin/reports" className="nav-button light icon" title={t('reports.title')} aria-label={t('reports.title')}><Flag size={16} aria-hidden="true" /></a> : null}
+                                    <span className="welcome-text">{t('nav.welcome', { name: userName })}</span>
+                                    {/* Stands in for the welcome text on desktop, where the bar is short of room; the phone menu shows the text. */}
+                                    <span className="user-chip" role="img" title={t('nav.welcome', { name: userName })} aria-label={t('nav.welcome', { name: userName })}>
+                                        <CircleUser size={20} aria-hidden="true" />
+                                    </span>
                                     <form action="/logout" method="POST" className="logout-form">
-                                        <input type="hidden" name="_token" value={csrfToken} />
-                                        <button type="submit">Logout</button>
+                                        <input type="hidden" name="_token" value={csrfToken || document.body.dataset.csrf} />
+                                        <button type="submit">{t('nav.logout')}</button>
                                     </form>
                                 </>
                             )}
                         </div>
                     </div>
                 </div>
+                )}
             </header>
 
             <main>{children}</main>
@@ -414,28 +612,26 @@ export default function SiteShellApp({
                         <div className="footer-grid">
                             <div>
                                 <div className="footer-brand">
-                                    <div className="footer-brand-mark">🌾</div>
-                                    <h5 style={{ margin: 0, fontSize: '1.3rem', fontFamily: 'Georgia, "Times New Roman", serif' }}>KhmerRice</h5>
+                                    <img className="footer-brand-mark" src="/icons/logo-mark.svg" alt="" width="46" height="46" />
+                                    <h5 style={{ margin: 0, fontSize: '1.3rem', fontFamily: 'var(--font-heading)' }}>KhmerRice</h5>
                                 </div>
                                 <p className="footer-meta" style={{ lineHeight: 1.7, margin: 0 }}>
-                                    Cambodia&apos;s premier platform for rice market data, variety information, and agricultural insights.
+                                    {t('footer.about')}
                                 </p>
                             </div>
 
                             <div>
-                                <h6 className="footer-title">Navigation</h6>
+                                <h6 className="footer-title">{t('footer.navigation')}</h6>
                                 <ul className="footer-links">
-                                    <li><a href="/home">Home</a></li>
-                                    <li><a href="/variety">Varieties</a></li>
-                                    <li><a href="/pricemarket">Prices</a></li>
-                                    <li><a href="/news">News</a></li>
-                                    <li><a href="/about">About</a></li>
-                                    <li><a href="/dashboard">Dashboard</a></li>
+                                    {navItems.map((item) => <li key={item.href}><a href={item.href}>{item.label}</a></li>)}
+                                    <li><a href="/calendar">{t('nav.calendar')}</a></li>
+                                    <li><a href="/variety/recommend">{t('nav.recommend')}</a></li>
+                                    <li><a href="/alerts">{t('nav.alerts')}</a></li>
                                 </ul>
                             </div>
 
                             <div>
-                                <h6 className="footer-title">Rice Varieties</h6>
+                                <h6 className="footer-title">{t('variety.title')}</h6>
                                 <ul className="footer-list">
                                     <li>Phka Rumduol</li>
                                     <li>Sen Kra Ob</li>
@@ -446,7 +642,7 @@ export default function SiteShellApp({
                             </div>
 
                             <div>
-                                <h6 className="footer-title">Contact</h6>
+                                <h6 className="footer-title">{t('footer.contact')}</h6>
                                 <ul className="footer-list">
                                     <li>📍 Phnom Penh, Cambodia</li>
                                     <li>✉️ info@khmerrice.kh</li>
@@ -464,8 +660,8 @@ export default function SiteShellApp({
                         <hr className="footer-divider" />
 
                         <div className="footer-bottom">
-                            <span>© 2026 KhmerRice Market. All rights reserved.</span>
-                            <span>Ministry of Agriculture, Forestry &amp; Fisheries — Cambodia</span>
+                            <span>{t('footer.rights')}</span>
+                            <span>{t('footer.ministry')}</span>
                         </div>
                     </div>
                 </div>

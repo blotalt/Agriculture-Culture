@@ -1,0 +1,22 @@
+{
+    "name": "KhmerRice Market",
+    "short_name": "KhmerRice",
+    "description": "Cambodian rice prices, varieties, planting calendar and news.",
+    "start_url": "/pricemarket",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#f6fafd",
+    "theme_color": "#2b7049",
+    "lang": "en",
+    "icons": [
+        { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+        { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+        { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+        { "src": "/icons/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+    ],
+    "shortcuts": [
+        { "name": "Market prices", "url": "/pricemarket" },
+        { "name": "Planting calendar", "url": "/calendar" },
+        { "name": "Price alerts", "url": "/alerts" }
+    ]
+}

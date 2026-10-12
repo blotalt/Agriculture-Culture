@@ -1,22 +1,25 @@
 import React from 'react';
+import ReportButton from './ReportButton.jsx';
+import { t } from '../i18n.js';
 
 export default function NewsDetailApp({ post, csrfToken, currentUserId }) {
     if (!post) return null;
 
     const avgRating = Number(post.avgRating || 0);
     const userRating = Number(post.userRating || 0);
+    const isGuest = !currentUserId;
 
     return (
         <>
             <style>{`
                 .news-detail-react-wrap {
-                    background: #faf6ee;
-                    color: #202020;
-                    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+                    background: var(--bg);
+                    color: var(--text);
+                    font-family: var(--font-body);
                     min-height: 100vh;
                 }
                 .news-detail-react-hero {
-                    background: #1b4d22;
+                    background: var(--green);
                     color: white;
                     padding: 34px 0 28px;
                 }
@@ -28,7 +31,7 @@ export default function NewsDetailApp({ post, csrfToken, currentUserId }) {
                 .news-detail-react-hero h1 {
                     margin: 0 0 6px;
                     font-size: clamp(2rem, 4vw, 2.8rem);
-                    font-family: Georgia, "Times New Roman", serif;
+                    font-family: var(--font-heading);
                 }
                 .news-detail-react-hero p {
                     margin: 0;
@@ -40,8 +43,8 @@ export default function NewsDetailApp({ post, csrfToken, currentUserId }) {
                     padding: 30px 24px 72px;
                 }
                 .news-card {
-                    background: white;
-                    border: 1px solid rgba(27,77,34,.08);
+                    background: var(--surface);
+                    border: 1px solid rgba(var(--green-rgb), .08);
                     border-radius: 18px;
                     padding: 24px;
                     box-shadow: 0 12px 28px rgba(0,0,0,.04);
@@ -49,12 +52,12 @@ export default function NewsDetailApp({ post, csrfToken, currentUserId }) {
                 }
                 .news-card h2 {
                     margin: 0 0 8px;
-                    color: #1b4d22;
+                    color: var(--green-ink);
                     font-size: clamp(1.8rem, 3.5vw, 2.4rem);
-                    font-family: Georgia, "Times New Roman", serif;
+                    font-family: var(--font-heading);
                 }
                 .news-card .meta {
-                    color: #6f6845;
+                    color: var(--text-muted);
                     margin: 0 0 18px;
                     font-size: .9rem;
                 }
@@ -64,18 +67,18 @@ export default function NewsDetailApp({ post, csrfToken, currentUserId }) {
                     max-height: 420px;
                     object-fit: contain;
                     border-radius: 12px;
-                    background: #f8f4ee;
+                    background: var(--bg);
                     margin-bottom: 18px;
                 }
                 .news-card .body {
-                    color: #4b5563;
+                    color: var(--text-muted);
                     line-height: 1.8;
                     margin: 0;
                     white-space: pre-line;
                 }
                 .rating-box {
-                    background: white;
-                    border: 1px solid rgba(27,77,34,.08);
+                    background: var(--surface);
+                    border: 1px solid rgba(var(--green-rgb), .08);
                     border-radius: 18px;
                     padding: 22px 20px;
                     display: flex;
@@ -87,7 +90,7 @@ export default function NewsDetailApp({ post, csrfToken, currentUserId }) {
                 }
                 .rating-box h4 {
                     margin: 0;
-                    color: #1b4d22;
+                    color: var(--green-ink);
                     font-size: 1.3rem;
                 }
                 .star-row {
@@ -102,31 +105,31 @@ export default function NewsDetailApp({ post, csrfToken, currentUserId }) {
                     cursor: pointer;
                     padding: 0;
                 }
-                .star-fill { color: #f7b500; }
-                .star-empty { color: #d8d0b5; }
+                .star-fill { color: var(--gold); }
+                .star-empty { color: var(--border); }
                 .comment-card {
-                    background: white;
-                    border: 1px solid rgba(27,77,34,.08);
+                    background: var(--surface);
+                    border: 1px solid rgba(var(--green-rgb), .08);
                     border-radius: 18px;
                     padding: 22px 20px;
                     box-shadow: 0 10px 24px rgba(0,0,0,.04);
                 }
                 .comment-card h4 {
                     margin: 0 0 16px;
-                    color: #1b4d22;
+                    color: var(--green-ink);
                 }
                 .comment-form textarea {
                     width: 100%;
                     min-height: 110px;
                     resize: vertical;
-                    border: 1px solid #e8dcc2;
+                    border: 1px solid var(--border);
                     border-radius: 12px;
-                    background: #faf5eb;
+                    background: var(--bg);
                     padding: 12px 14px;
                     margin-bottom: 12px;
                 }
                 .comment-form button, .primary-btn {
-                    background: #1b4d22;
+                    background: var(--green);
                     color: white;
                     border: none;
                     border-radius: 999px;
@@ -135,7 +138,7 @@ export default function NewsDetailApp({ post, csrfToken, currentUserId }) {
                     cursor: pointer;
                 }
                 .comment-item {
-                    border-bottom: 1px solid #efe7d7;
+                    border-bottom: 1px solid var(--blue-soft);
                     padding: 16px 0;
                 }
                 .comment-item:last-child { border-bottom: none; }
@@ -145,15 +148,15 @@ export default function NewsDetailApp({ post, csrfToken, currentUserId }) {
                     align-items: flex-start;
                     gap: 12px;
                 }
-                .comment-head strong { color: #1b4d22; }
+                .comment-head strong { color: var(--green-ink); }
                 .comment-actions {
                     display: flex;
                     flex-direction: column;
                     gap: 8px;
                 }
                 .comment-actions button, .comment-actions form button {
-                    background: #f7e8ad;
-                    color: #1b4d22;
+                    background: var(--gold-soft);
+                    color: var(--green-ink);
                     border: none;
                     border-radius: 999px;
                     padding: 8px 12px;
@@ -161,32 +164,37 @@ export default function NewsDetailApp({ post, csrfToken, currentUserId }) {
                     cursor: pointer;
                 }
                 .danger-button {
-                    background: #fff1f0 !important;
-                    color: #b42318 !important;
-                    border: 1px solid #f7c8c1 !important;
+                    background: var(--danger-soft) !important;
+                    color: var(--danger) !important;
+                    border: 1px solid var(--danger-border) !important;
                 }
-                .muted { color: #6f6845; }
+                .muted { color: var(--text-muted); }
                 @media(max-width:640px){.comment-head{display:block;}.comment-actions{flex-direction:row;margin-top:12px;}}
             `}</style>
 
             <div className="news-detail-react-wrap">
                 <section className="news-detail-react-hero">
                     <div className="news-detail-react-inner">
-                        <h1>News Details</h1>
-                        <p>Read the full update</p>
+                        <h1>{t('newsDetail.title')}</h1>
+                        <p>{t('newsDetail.subtitle')}</p>
                     </div>
                 </section>
 
                 <section className="news-detail-react-content">
-                    <article className="news-card">
+                    <article className="news-card animate-fade-in-up">
                         <h2>{post.title}</h2>
                         {post.image ? <img src={`/storage/${post.image}`} alt={post.title} /> : null}
-                        <p className="meta">By {post.user?.name || 'Unknown user'} · {post.created_at}</p>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
+                            <p className="meta" style={{ margin: 0 }}>
+                                {t('common.by')} {post.user?.name || t('common.unknownUser')} · {post.created_at} · {t('newsDetail.views', { count: post.views || 0 })}
+                            </p>
+                            {!isGuest && post.user_id !== currentUserId ? <ReportButton type="post" id={post.id} csrfToken={csrfToken} /> : null}
+                        </div>
                         <p className="body">{post.body}</p>
                     </article>
 
-                    <div className="rating-box">
-                        <h4>Leave a Review</h4>
+                    <div className="rating-box animate-fade-in-up">
+                        <h4>{t('newsDetail.review')}</h4>
                         <form method="POST" action={`/news/${post.id}/rating`}>
                             <input type="hidden" name="_token" value={csrfToken} />
                             <div className="star-row">
@@ -204,13 +212,19 @@ export default function NewsDetailApp({ post, csrfToken, currentUserId }) {
                         </form>
                     </div>
 
-                    <div className="comment-card">
-                        <h4>Comments</h4>
-                        <form method="POST" action={`/news/${post.id}/comments`} className="comment-form">
-                            <input type="hidden" name="_token" value={csrfToken} />
-                            <textarea name="body" placeholder="Write a comment..." required />
-                            <button type="submit">Post Comment</button>
-                        </form>
+                    <div className="comment-card animate-fade-in-up">
+                        <h4>{t('newsDetail.comments')}</h4>
+                        {isGuest ? (
+                            <p className="muted">
+                                <a href="/login" style={{ color: 'var(--green-ink)', fontWeight: 700 }}>{t('nav.login')}</a> {t('newsDetail.loginToComment')}
+                            </p>
+                        ) : (
+                            <form method="POST" action={`/news/${post.id}/comments`} className="comment-form">
+                                <input type="hidden" name="_token" value={csrfToken} />
+                                <textarea name="body" placeholder={t('newsDetail.writeComment')} maxLength={1000} required />
+                                <button type="submit">{t('newsDetail.postComment')}</button>
+                            </form>
+                        )}
 
                         {post.comments && post.comments.length > 0 ? (
                             post.comments.map((comment) => (
@@ -222,7 +236,8 @@ export default function NewsDetailApp({ post, csrfToken, currentUserId }) {
                                             <small className="muted">{comment.created_at}</small>
                                         </div>
 
-                                        {Number(comment.user_id) === Number(currentUserId) ? (
+                                        {!comment.can_manage && !isGuest ? <ReportButton type="comment" id={comment.id} csrfToken={csrfToken} /> : null}
+                                        {comment.can_manage ? (
                                             <div className="comment-actions">
                                                 <button type="button" data-bs-toggle="collapse" data-bs-target={`#editComment${comment.id}`}>Edit</button>
                                                 <form method="POST" action={`/comments/${comment.id}`}>
@@ -234,7 +249,7 @@ export default function NewsDetailApp({ post, csrfToken, currentUserId }) {
                                         ) : null}
                                     </div>
 
-                                    {Number(comment.user_id) === Number(currentUserId) ? (
+                                    {comment.can_manage ? (
                                         <div className="collapse mt-3" id={`editComment${comment.id}`}>
                                             <form method="POST" action={`/comments/${comment.id}`} className="comment-form">
                                                 <input type="hidden" name="_token" value={csrfToken} />
@@ -247,7 +262,7 @@ export default function NewsDetailApp({ post, csrfToken, currentUserId }) {
                                 </div>
                             ))
                         ) : (
-                            <p className="muted" style={{ margin: '14px 0 0' }}>No comments yet.</p>
+                            <p className="muted" style={{ margin: '14px 0 0' }}>{t('newsDetail.noComments')}</p>
                         )}
                     </div>
                 </section>

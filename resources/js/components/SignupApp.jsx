@@ -10,19 +10,19 @@ export default function SignupApp() {
                     align-items: center;
                     justify-content: center;
                     padding: 40px 18px;
-                    background: linear-gradient(rgba(46, 91, 38, 0.85), rgba(46, 91, 38, 0.85)), url('/images/rice_field_bg.jpg') center/cover no-repeat;
-                    color: #1f2937;
-                    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+                    background: linear-gradient(rgba(var(--green-rgb), 0.85), rgba(var(--green-rgb), 0.85)), url('/images/extra/ricelandscape.jpg') center/cover no-repeat;
+                    color: var(--text);
+                    font-family: var(--font-body);
                 }
                 .signup-react-card {
                     width: min(760px, 100%);
-                    background: #fff;
+                    background: var(--surface);
                     border-radius: 28px;
                     overflow: hidden;
                     box-shadow: 0 28px 60px rgba(0,0,0,.18);
                 }
                 .signup-react-header {
-                    background: #2e5b26;
+                    background: var(--green);
                     color: #fff;
                     text-align: center;
                     padding: 28px 20px 22px;
@@ -34,7 +34,7 @@ export default function SignupApp() {
                 .signup-react-header h2 {
                     margin: 0 0 4px;
                     font-size: clamp(2rem, 4vw, 2.4rem);
-                    font-family: Georgia, "Times New Roman", serif;
+                    font-family: var(--font-heading);
                     letter-spacing: 0.08em;
                 }
                 .signup-react-header p {
@@ -54,13 +54,13 @@ export default function SignupApp() {
                 .field-group.full { grid-column: 1 / -1; }
                 .signup-react-label {
                     font-weight: 700;
-                    color: #1f2937;
+                    color: var(--text);
                     font-size: .9rem;
                 }
                 .input-wrap {
                     display: flex;
                     align-items: center;
-                    background: #f4edd4;
+                    background: var(--blue-soft);
                     border-radius: 12px;
                     overflow: hidden;
                 }
@@ -69,14 +69,14 @@ export default function SignupApp() {
                     align-items: center;
                     justify-content: center;
                     width: 52px;
-                    color: #7a7561;
+                    color: var(--text-muted);
                     flex-shrink: 0;
                 }
                 .signup-react-input {
                     width: 100%;
                     border: none;
                     background: transparent;
-                    color: #111827;
+                    color: var(--text);
                     padding: 15px 16px 15px 0;
                     font-size: 1rem;
                     outline: none;
@@ -85,7 +85,7 @@ export default function SignupApp() {
                     display: flex;
                     align-items: center;
                     gap: 10px;
-                    color: #4b5563;
+                    color: var(--text-muted);
                     font-size: .9rem;
                     margin-top: 8px;
                 }
@@ -94,8 +94,8 @@ export default function SignupApp() {
                     width: 100%;
                     border: none;
                     border-radius: 12px;
-                    background: #e9af2a;
-                    color: #1f2937;
+                    background: var(--gold);
+                    color: var(--on-gold);
                     font-weight: 800;
                     font-size: 1rem;
                     padding: 16px 18px;
@@ -106,11 +106,11 @@ export default function SignupApp() {
                 .signup-react-footer {
                     text-align: center;
                     padding: 0 0 22px;
-                    color: #4b5563;
+                    color: var(--text-muted);
                     font-size: .92rem;
                 }
                 .signup-react-footer a {
-                    color: #d6a63b;
+                    color: var(--gold-dark);
                     text-decoration: none;
                     font-weight: 800;
                 }
@@ -120,9 +120,9 @@ export default function SignupApp() {
             `}</style>
 
             <div className="signup-react-wrap">
-                <div className="signup-react-card">
+                <div className="signup-react-card animate-fade-in-up">
                     <div className="signup-react-header">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#e9af2a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" style={{ stroke: 'var(--gold)' }} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <path d="M2 22s11.5-1.5 14-11.5S15 2 15 2s-1.5 7.5-11.5 10S2 22 2 22z"></path>
                             <path d="M9 13c1.5-1.5 4-2.5 4-2.5s-1-2.5-2.5-4"></path>
                             <path d="M6 16c1.5-1.5 4-2.5 4-2.5s-1-2.5-2.5-4"></path>
@@ -178,7 +178,7 @@ export default function SignupApp() {
                             <div className="field-group full">
                                 <label className="signup-react-check">
                                     <input type="checkbox" name="terms" required />
-                                    <span>I agree to the <a href="#" style={{ color: '#d6a63b', textDecoration: 'none', fontWeight: 700 }}>Terms of Service</a> and <a href="#" style={{ color: '#d6a63b', textDecoration: 'none', fontWeight: 700 }}>Privacy Policy</a></span>
+                                    <span>I agree to the <a href="#" style={{ color: 'var(--gold-dark)', textDecoration: 'none', fontWeight: 700 }}>Terms of Service</a> and <a href="#" style={{ color: 'var(--gold)', textDecoration: 'none', fontWeight: 700 }}>Privacy Policy</a></span>
                                 </label>
                             </div>
 

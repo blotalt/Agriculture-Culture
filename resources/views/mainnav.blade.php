@@ -62,6 +62,7 @@
                                 </a>
                             </li>
 
+                            @can('admin')
                             <li>
                                 <a class="dropdown-item bg-header-green text-white" href="{{ route('admin.market-prices.index') }}">
                                     Manage Prices
@@ -73,6 +74,7 @@
                                     Add New Price
                                 </a>
                             </li>
+                            @endcan
                         </ul>
                     </li>
 

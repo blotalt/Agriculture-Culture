@@ -6,11 +6,13 @@
         data-page="news-detail"
         data-csrf="{{ csrf_token() }}"
         data-user-id="{{ auth()->id() ?? 0 }}"
-        data-post='@json([
+        data-post='{{ json_encode([
             "id" => $post->id,
             "title" => $post->title,
             "body" => $post->body,
             "image" => $post->image,
+            "views" => (int) $post->views,
+            "user_id" => $post->user_id,
             "created_at" => $post->created_at->format('M d, Y'),
             "avgRating" => (float) ($post->avgRating ?? 0),
             "userRating" => (float) ($post->userRating ?? 0),
@@ -19,9 +21,10 @@
                 "id" => $comment->id,
                 "body" => $comment->body,
                 "user_id" => $comment->user_id,
+                "can_manage" => auth()->check() && auth()->user()->canManage($comment),
                 "created_at" => $comment->created_at->diffForHumans(),
                 "user" => ["name" => $comment->user?->name ?? "User"],
             ]; })->values()->all(),
-        ])'>
+        ]) }}'>
     </div>
 @endsection

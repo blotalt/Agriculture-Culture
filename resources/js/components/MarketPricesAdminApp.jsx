@@ -11,38 +11,38 @@ export default function MarketPricesAdminApp({ prices = [], csrfToken = '' }) {
     return (
         <>
             <style>{`
-                .market-prices-admin-react-wrap{background:#f5f1e6;color:#1f2937;font-family:system-ui,-apple-system,Segoe UI,sans-serif;}
-                .market-prices-admin-react-wrap .hero-band{background:#1b4d22;color:#fff;padding:38px 0 26px;}
+                .market-prices-admin-react-wrap{background:var(--bg);color:var(--text);font-family:var(--font-body);}
+                .market-prices-admin-react-wrap .hero-band{background:var(--green);color:#fff;padding:38px 0 26px;}
                 .market-prices-admin-react-wrap .inner{max-width:1200px;margin:0 auto;padding:0 24px;}
-                .market-prices-admin-react-wrap .eyebrow{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:#f4c84f;}
-                .market-prices-admin-react-wrap h1{margin:10px 0 8px;font-size:clamp(2.2rem,4vw,3rem);font-family:Georgia,"Times New Roman",serif;}
+                .market-prices-admin-react-wrap .eyebrow{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:var(--gold-light);}
+                .market-prices-admin-react-wrap h1{margin:10px 0 8px;font-size:clamp(2.2rem,4vw,3rem);font-family:var(--font-heading);}
                 .market-prices-admin-react-wrap .subtitle{margin:0;color:rgba(255,255,255,.76);}
                 .market-prices-admin-react-wrap .content{max-width:1200px;margin:0 auto;padding:28px 24px 72px;}
                 .market-prices-admin-react-wrap .stats-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:18px;}
-                .market-prices-admin-react-wrap .stat-box{background:#fff;border:1px solid rgba(27,77,34,.08);border-radius:16px;padding:18px 20px;box-shadow:0 12px 24px rgba(0,0,0,.04);}
-                .market-prices-admin-react-wrap .stat-box strong{display:block;color:#1b4d22;font-size:1.9rem;font-family:Georgia,"Times New Roman",serif;}
-                .market-prices-admin-react-wrap .stat-box span{color:#6f6845;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;font-weight:800;}
-                .market-prices-admin-react-wrap .panel{background:#fff;border:1px solid rgba(27,77,34,.08);border-radius:18px;overflow:hidden;box-shadow:0 16px 32px rgba(0,0,0,.04);}
+                .market-prices-admin-react-wrap .stat-box{background:var(--surface);border:1px solid rgba(var(--green-rgb), .08);border-radius:16px;padding:18px 20px;box-shadow:0 12px 24px rgba(0,0,0,.04);}
+                .market-prices-admin-react-wrap .stat-box strong{display:block;color:var(--green-ink);font-size:1.9rem;font-family:var(--font-heading);}
+                .market-prices-admin-react-wrap .stat-box span{color:var(--text-muted);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;font-weight:800;}
+                .market-prices-admin-react-wrap .panel{background:var(--surface);border:1px solid rgba(var(--green-rgb), .08);border-radius:18px;overflow:hidden;box-shadow:0 16px 32px rgba(0,0,0,.04);}
                 .market-prices-admin-react-wrap .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:22px 22px 16px;}
-                .market-prices-admin-react-wrap .toolbar h2{margin:0;color:#1b4d22;font-size:1.6rem;font-family:Georgia,"Times New Roman",serif;}
-                .market-prices-admin-react-wrap .toolbar a{display:inline-block;background:#1b4d22;color:#fff;text-decoration:none;border-radius:10px;padding:10px 14px;font-weight:700;}
+                .market-prices-admin-react-wrap .toolbar h2{margin:0;color:var(--green-ink);font-size:1.6rem;font-family:var(--font-heading);}
+                .market-prices-admin-react-wrap .toolbar a{display:inline-block;background:var(--green);color:#fff;text-decoration:none;border-radius:10px;padding:10px 14px;font-weight:700;}
                 .market-prices-admin-react-wrap table{width:100%;border-collapse:collapse;}
-                .market-prices-admin-react-wrap th, .market-prices-admin-react-wrap td{padding:14px 16px;border-bottom:1px solid #efe7d6;text-align:left;}
-                .market-prices-admin-react-wrap th{background:#edf5ea;color:#1b4d22;font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;}
-                .market-prices-admin-react-wrap tbody tr:hover{background:#faf7f1;}
-                .market-prices-admin-react-wrap .price{font-weight:800;color:#1b4d22;}
-                .market-prices-admin-react-wrap .positive{color:#0f9f63;font-weight:800;}
-                .market-prices-admin-react-wrap .negative{color:#c93d3d;font-weight:800;}
+                .market-prices-admin-react-wrap th, .market-prices-admin-react-wrap td{padding:14px 16px;border-bottom:1px solid var(--blue-soft);text-align:left;}
+                .market-prices-admin-react-wrap th{background:var(--green-soft);color:var(--green-ink);font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;}
+                .market-prices-admin-react-wrap tbody tr:hover{background:var(--bg);}
+                .market-prices-admin-react-wrap .price{font-weight:800;color:var(--green-ink);}
+                .market-prices-admin-react-wrap .positive{color:var(--success);font-weight:800;}
+                .market-prices-admin-react-wrap .negative{color:var(--danger);font-weight:800;}
                 .market-prices-admin-react-wrap .actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;}
-                .market-prices-admin-react-wrap .btn-light{display:inline-block;background:#f7e8ad;color:#1b4d22;border-radius:8px;padding:8px 12px;text-decoration:none;font-weight:700;}
-                .market-prices-admin-react-wrap .btn-danger{display:inline-block;background:#fff;color:#b42318;border:1px solid #f7c8c1;border-radius:8px;padding:8px 12px;font-weight:700;cursor:pointer;}
-                .market-prices-admin-react-wrap .empty{padding:42px 18px;text-align:center;color:#6f6845;}
+                .market-prices-admin-react-wrap .btn-light{display:inline-block;background:var(--gold-soft);color:var(--green-ink);border-radius:8px;padding:8px 12px;text-decoration:none;font-weight:700;}
+                .market-prices-admin-react-wrap .btn-danger{display:inline-block;background:var(--surface);color:var(--danger);border:1px solid var(--danger-border);border-radius:8px;padding:8px 12px;font-weight:700;cursor:pointer;}
+                .market-prices-admin-react-wrap .empty{padding:42px 18px;text-align:center;color:var(--text-muted);}
                 .market-prices-admin-react-wrap .modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:20;}
-                .market-prices-admin-react-wrap .modal-card{width:min(420px,100%);background:#fff;border-radius:18px;padding:24px;box-shadow:0 22px 48px rgba(0,0,0,.18);}
-                .market-prices-admin-react-wrap .modal-card h3{margin:0 0 10px;color:#1b4d22;font-size:1.7rem;}
-                .market-prices-admin-react-wrap .modal-card p{margin:0;color:#4b5563;line-height:1.7;}
+                .market-prices-admin-react-wrap .modal-card{width:min(420px,100%);background:var(--surface);border-radius:18px;padding:24px;box-shadow:0 22px 48px rgba(0,0,0,.18);}
+                .market-prices-admin-react-wrap .modal-card h3{margin:0 0 10px;color:var(--green-ink);font-size:1.7rem;}
+                .market-prices-admin-react-wrap .modal-card p{margin:0;color:var(--text-muted);line-height:1.7;}
                 .market-prices-admin-react-wrap .modal-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:18px;}
-                @media(max-width:760px){.market-prices-admin-react-wrap .stats-grid{grid-template-columns:1fr;}.market-prices-admin-react-wrap .toolbar{flex-direction:column;align-items:flex-start;}.market-prices-admin-react-wrap table,.market-prices-admin-react-wrap thead,.market-prices-admin-react-wrap tbody,.market-prices-admin-react-wrap th,.market-prices-admin-react-wrap td,.market-prices-admin-react-wrap tr{display:block;}.market-prices-admin-react-wrap th{display:none;}.market-prices-admin-react-wrap td{border:none;padding:10px 16px;}.market-prices-admin-react-wrap td::before{content:attr(data-label);display:block;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:#1b4d22;font-weight:800;margin-bottom:4px;}}
+                @media(max-width:760px){.market-prices-admin-react-wrap .stats-grid{grid-template-columns:1fr;}.market-prices-admin-react-wrap .toolbar{flex-direction:column;align-items:flex-start;}.market-prices-admin-react-wrap table,.market-prices-admin-react-wrap thead,.market-prices-admin-react-wrap tbody,.market-prices-admin-react-wrap th,.market-prices-admin-react-wrap td,.market-prices-admin-react-wrap tr{display:block;}.market-prices-admin-react-wrap th{display:none;}.market-prices-admin-react-wrap td{border:none;padding:10px 16px;}.market-prices-admin-react-wrap td::before{content:attr(data-label);display:block;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--green-ink);font-weight:800;margin-bottom:4px;}}
             `}</style>
 
             <div className="market-prices-admin-react-wrap">
@@ -56,17 +56,17 @@ export default function MarketPricesAdminApp({ prices = [], csrfToken = '' }) {
 
                 <section className="content">
                     <div className="stats-grid">
-                        <div className="stat-box">
+                        <div className="stat-box animate-fade-in-up hover-lift">
                             <strong>{stats.total}</strong>
                             <span>Total records</span>
                         </div>
-                        <div className="stat-box">
+                        <div className="stat-box animate-fade-in-up hover-lift">
                             <strong>{stats.positive}</strong>
                             <span>Positive trend</span>
                         </div>
                     </div>
 
-                    <div className="panel">
+                    <div className="panel animate-fade-in-up">
                         <div className="toolbar">
                             <h2>Live pricing list</h2>
                             <a href="/admin/market-prices/create">+ Add New Price</a>
@@ -119,7 +119,7 @@ export default function MarketPricesAdminApp({ prices = [], csrfToken = '' }) {
 
             {selectedId ? (
                 <div className="modal-backdrop" onClick={() => setSelectedId(null)}>
-                    <div className="modal-card" onClick={(event) => event.stopPropagation()}>
+                    <div className="modal-card animate-fade-in-up" onClick={(event) => event.stopPropagation()}>
                         <h3>Delete Price</h3>
                         <p>Delete this market price? This action cannot be undone.</p>
                         <div className="modal-actions">

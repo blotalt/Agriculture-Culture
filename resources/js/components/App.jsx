@@ -47,9 +47,9 @@ export default function App() {
         <>
             <style>{`
                 .khmer-react-wrap {
-                    background: #faf6ee;
-                    color: #202020;
-                    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+                    background: var(--bg);
+                    color: var(--text);
+                    font-family: var(--font-body);
                 }
                 .khmer-react-wrap .hero-panel {
                     position: relative;
@@ -57,7 +57,7 @@ export default function App() {
                     min-height: 620px;
                     display: flex;
                     align-items: end;
-                    background: #0c2611;
+                    background: var(--green-dark);
                 }
                 .khmer-react-wrap .hero-image {
                     position: absolute;
@@ -81,8 +81,8 @@ export default function App() {
                 }
                 .khmer-react-wrap .hero-badge {
                     display: inline-block;
-                    background: #cca01d;
-                    color: #1b4d22;
+                    background: var(--gold);
+                    color: var(--on-gold);
                     font-weight: 700;
                     padding: 6px 18px;
                     border-radius: 20px;
@@ -93,7 +93,7 @@ export default function App() {
                     line-height: 1.08;
                     font-weight: 800;
                     margin: 0 0 16px;
-                    font-family: Georgia, "Times New Roman", serif;
+                    font-family: var(--font-heading);
                 }
                 .khmer-react-wrap .hero-content p {
                     font-size: 1.2rem;
@@ -108,8 +108,8 @@ export default function App() {
                     flex-wrap: wrap;
                 }
                 .khmer-react-wrap .btn-primary {
-                    background: #f4c84f;
-                    color: #1b4d22;
+                    background: var(--gold-light);
+                    color: var(--on-gold);
                     border: none;
                     border-radius: 8px;
                     padding: 12px 24px;
@@ -128,7 +128,7 @@ export default function App() {
                     display: inline-block;
                 }
                 .khmer-react-wrap .stats-bar {
-                    background: #1b4d22;
+                    background: var(--green);
                     color: white;
                     padding: 28px 0;
                 }
@@ -146,10 +146,10 @@ export default function App() {
                 }
                 .khmer-react-wrap .stat-item h3 {
                     margin: 0 0 4px;
-                    color: #cca01d;
+                    color: var(--gold);
                     font-weight: 800;
                     font-size: 2.2rem;
-                    font-family: Georgia, "Times New Roman", serif;
+                    font-family: var(--font-heading);
                 }
                 .khmer-react-wrap .stat-item p {
                     margin: 0;
@@ -169,7 +169,7 @@ export default function App() {
                 .khmer-react-wrap .video-card {
                     border-radius: 12px;
                     overflow: hidden;
-                    background: #fff;
+                    background: var(--surface);
                     box-shadow: 0 14px 30px rgba(0,0,0,0.08);
                 }
                 .khmer-react-wrap .video-card iframe {
@@ -180,32 +180,32 @@ export default function App() {
                     display: block;
                 }
                 .khmer-react-wrap .section-label {
-                    color: #cca01d;
+                    color: var(--gold);
                     font-weight: 800;
                     text-transform: uppercase;
                     letter-spacing: 1px;
                     margin-bottom: 10px;
                 }
                 .khmer-react-wrap h2 {
-                    color: #202020;
+                    color: var(--text);
                     font-size: clamp(2rem, 3vw, 2.7rem);
                     font-weight: 800;
                     margin: 0 0 18px;
                     line-height: 1.2;
-                    font-family: Georgia, "Times New Roman", serif;
+                    font-family: var(--font-heading);
                 }
                 .khmer-react-wrap p {
-                    color: #6f6845;
+                    color: var(--text-muted);
                     line-height: 1.8;
                     margin: 0 0 14px;
                 }
                 .khmer-react-wrap .story-link {
-                    color: #1b4d22;
+                    color: var(--green-ink);
                     font-weight: 700;
                     text-decoration: none;
                 }
                 .khmer-react-wrap .about-panel {
-                    background: #faf7ea;
+                    background: var(--bg);
                 }
                 .khmer-react-wrap .about-grid {
                     display: grid;
@@ -220,21 +220,21 @@ export default function App() {
                     margin-top: 18px;
                 }
                 .khmer-react-wrap .mini-stat {
-                    background: #eee8d6;
-                    border: 1px solid #d8d0b6;
+                    background: var(--blue-soft);
+                    border: 1px solid var(--border);
                     border-radius: 8px;
                     padding: 22px;
                 }
                 .khmer-react-wrap .mini-stat h3 {
                     margin: 0 0 2px;
-                    color: #cca01d;
+                    color: var(--gold);
                     font-size: 2rem;
                     font-weight: 800;
-                    font-family: Georgia, "Times New Roman", serif;
+                    font-family: var(--font-heading);
                 }
                 .khmer-react-wrap .mini-stat p {
                     margin: 0;
-                    color: #6f6845;
+                    color: var(--text-muted);
                 }
                 .khmer-react-wrap .about-image {
                     width: 100%;
@@ -290,7 +290,7 @@ export default function App() {
 
                 <section className="section-wrap">
                     <div className="story-grid">
-                        <div className="video-card">
+                        <div className="video-card animate-fade-in-up hover-lift">
                             <iframe
                                 src="https://www.youtube.com/embed/9FmFKUwm41o?si=H0blIlSJHAfosmLA"
                                 title="Rice story video"

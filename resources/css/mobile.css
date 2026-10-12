@@ -1,0 +1,433 @@
+/*
+ * Phone layout. Loaded on every page by SiteShellApp.
+ *
+ * The breakpoint is 760px, the same as resources/js/hooks/useIsMobile.js. Components that need a
+ * different structure on phones (the header, the price list, the variety comparison) render separate
+ * mobile JSX via useIsMobile(); this file styles those parts and adjusts the rest of the site.
+ * Everything uses the site's colour tokens, so it follows light and dark mode.
+ */
+
+/* ---------------------------------------------------------------------------------------------
+ * Phone header (MobileHeader.jsx): a slim fixed bar, and a slide-in menu
+ * ------------------------------------------------------------------------------------------- */
+
+/* The bar sits flush with the top of the screen, so there's no gap above it to reserve. */
+.site-shell-react.site-header.is-mobile {
+    --site-nav-gap: 0px;
+}
+
+.m-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 15;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 6px 0 14px;
+    background: var(--green);
+    color: #fff;
+    transition: box-shadow 0.25s ease;
+}
+.m-bar.is-scrolled {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+.m-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    text-decoration: none;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.15rem;
+}
+.m-brand img {
+    width: 34px;
+    height: 34px;
+}
+
+.m-bar-actions {
+    display: flex;
+    gap: 2px;
+}
+
+/* 44px square: comfortable for a thumb. */
+.m-icon {
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: #fff;
+    font-size: 1.35rem;
+    text-decoration: none;
+    cursor: pointer;
+}
+.m-icon:active,
+.m-icon:focus-visible {
+    background: rgba(255, 255, 255, 0.14);
+}
+
+.m-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 25;
+    background: rgba(10, 20, 15, 0.45);
+    animation: m-fade 0.2s ease;
+}
+
+.m-drawer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(86vw, 340px);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 0 16px calc(24px + env(safe-area-inset-bottom));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: -12px 0 32px rgba(0, 0, 0, 0.2);
+    animation: m-slide 0.25s ease;
+}
+
+.m-drawer-head {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0 6px 4px;
+    background: var(--surface);
+    color: var(--green-ink);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.15rem;
+}
+.m-drawer-head .m-icon {
+    color: var(--text);
+}
+.m-drawer-head .m-icon:active,
+.m-drawer-head .m-icon:focus-visible {
+    background: var(--blue-soft);
+}
+
+.m-search {
+    position: relative;
+    margin: 0;
+}
+.m-search svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+}
+.m-search input {
+    width: 100%;
+    padding: 12px 14px 12px 40px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.m-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 2px;
+}
+.m-links a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 48px;
+    padding: 0 12px;
+    border-radius: 12px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 1.02rem;
+    font-weight: 600;
+}
+.m-links a:active {
+    background: var(--blue-soft);
+}
+.m-links a.is-active {
+    background: var(--green-soft);
+    color: var(--green-ink);
+}
+.m-link-icon {
+    flex-shrink: 0;
+    color: var(--green-ink);
+}
+.m-chip svg {
+    flex-shrink: 0;
+}
+.m-button svg {
+    flex-shrink: 0;
+    margin-right: 8px;
+}
+
+.m-row {
+    display: flex;
+    gap: 8px;
+}
+.m-chip {
+    flex: 1;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg);
+    color: var(--text);
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.92rem;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.m-auth {
+    display: grid;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+}
+.m-auth form {
+    margin: 0;
+}
+.m-welcome {
+    margin: 0 0 4px;
+    color: var(--text-muted);
+}
+.m-button {
+    display: flex;
+    width: 100%;
+    min-height: 46px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font: inherit;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+}
+.m-button.gold {
+    border: none;
+    background: var(--gold);
+    color: var(--on-gold);
+}
+.m-button.outline {
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--green-ink);
+}
+
+@keyframes m-fade {
+    from { opacity: 0; }
+}
+@keyframes m-slide {
+    from { transform: translateX(100%); }
+}
+
+/* ---------------------------------------------------------------------------------------------
+ * Price cards (PriceCards.jsx) and variety cards (VarietyCompareCards.jsx)
+ * ------------------------------------------------------------------------------------------- */
+
+.m-sort {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 12px;
+    color: var(--green-ink);
+    font-weight: 700;
+}
+.m-sort select {
+    flex: 1;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    color: var(--text);
+}
+
+.m-cards {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+}
+
+.m-price-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 4px 12px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--surface);
+}
+.m-price-card .market {
+    margin: 0;
+    color: var(--text);
+    font-weight: 700;
+    font-size: 1.02rem;
+}
+.m-price-card .where {
+    grid-column: 1;
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+.m-price-card .price {
+    grid-row: 1;
+    grid-column: 2;
+    justify-self: end;
+    color: var(--green-ink);
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 1.35rem;
+    line-height: 1.1;
+}
+.m-price-card .change {
+    grid-column: 2;
+    justify-self: end;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+.m-price-card .meta {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 4px;
+    padding-top: 8px;
+    border-top: 1px solid var(--blue-soft);
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.m-variety-card {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--surface);
+}
+.m-variety-card img {
+    display: block;
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+.m-variety-card .body {
+    display: grid;
+    gap: 12px;
+    padding: 14px 16px 16px;
+}
+.m-variety-card h2 {
+    margin: 0;
+    color: var(--green-ink);
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+}
+.m-variety-card .facts {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 8px 14px;
+    margin: 0;
+}
+.m-variety-card dt {
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding-top: 2px;
+}
+.m-variety-card dd {
+    margin: 0;
+    color: var(--text);
+}
+.m-variety-card details {
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+}
+.m-variety-card summary {
+    min-height: 32px;
+    color: var(--green-ink);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* ---------------------------------------------------------------------------------------------
+ * Phone adjustments for the rest of the site
+ * ------------------------------------------------------------------------------------------- */
+
+@media (max-width: 760px) {
+    /* 16px text in form fields stops iPhones from zooming in when a field is tapped. */
+    input:not([type='checkbox']):not([type='radio']):not([type='file']),
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+
+    /* Success and error messages: full width, clear of the phone's bottom edge. */
+    .flash-toast {
+        left: 12px;
+        right: 12px;
+        bottom: calc(12px + env(safe-area-inset-bottom));
+        max-width: none;
+    }
+
+    /* A shorter map leaves room to scroll past it with a thumb. */
+    .price-map {
+        height: 300px !important;
+    }
+
+    /* Collapsible "source details" on the Prices page. */
+    .m-collapse > * + * {
+        margin-top: 12px;
+    }
+    .m-collapse > summary {
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+        color: var(--green-ink);
+        font-weight: 700;
+        cursor: pointer;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .m-overlay,
+    .m-drawer {
+        animation: none;
+    }
+}
+
+@media print {
+    .m-bar {
+        position: static;
+        box-shadow: none;
+    }
+}
