@@ -13,5 +13,5 @@
 @extends('layout')
 
 @section('content')
-    <div id="react-app" data-page="about" data-team='@json($teamMembers)'></div>
+    <div id="react-app" data-page="about" data-team='{{ json_encode($teamMembers) }}'></div>
 @endsection

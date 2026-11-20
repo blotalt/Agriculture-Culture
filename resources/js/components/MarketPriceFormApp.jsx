@@ -8,8 +8,9 @@ export default function MarketPriceFormApp({ mode = 'create', price = null, csrf
         province: '',
         market: '',
         price_per_kg: '',
-        change_percent: '',
+        recorded_on: '',
     };
+    const today = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in local time
 
     const isEdit = mode === 'edit';
     const action = isEdit ? `/admin/market-prices/${currentPrice.id}` : '/admin/market-prices';
@@ -18,9 +19,9 @@ export default function MarketPriceFormApp({ mode = 'create', price = null, csrf
         <>
             <style>{`
                 .market-price-form-react-wrap {
-                    background: #faf6ee;
-                    color: #202020;
-                    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+                    background: var(--bg);
+                    color: var(--text);
+                    font-family: var(--font-body);
                     min-height: 100vh;
                 }
                 .market-price-form-react-shell {
@@ -30,27 +31,27 @@ export default function MarketPriceFormApp({ mode = 'create', price = null, csrf
                 }
                 .market-price-form-react-back {
                     display: inline-block;
-                    color: #4b5563;
+                    color: var(--text-muted);
                     text-decoration: none;
                     font-size: 0.9rem;
                     margin-bottom: 18px;
                 }
                 .market-price-form-react-card {
-                    background: white;
-                    border: 1px solid rgba(27,77,34,0.08);
+                    background: var(--surface);
+                    border: 1px solid rgba(var(--green-rgb), 0.08);
                     border-radius: 20px;
                     box-shadow: 0 16px 36px rgba(0,0,0,0.05);
                     padding: 28px;
                 }
                 .market-price-form-react-card h1 {
                     margin: 0 0 8px;
-                    color: #1b4d22;
+                    color: var(--green-ink);
                     font-size: clamp(2rem, 4vw, 2.8rem);
-                    font-family: Georgia, "Times New Roman", serif;
+                    font-family: var(--font-heading);
                 }
                 .market-price-form-react-card p {
                     margin: 0 0 26px;
-                    color: #6f6845;
+                    color: var(--text-muted);
                     line-height: 1.6;
                 }
                 .market-price-form-react-form {
@@ -65,17 +66,17 @@ export default function MarketPriceFormApp({ mode = 'create', price = null, csrf
                 .market-price-form-react-field {
                     display: block;
                     width: 100%;
-                    background: #f7f1e3;
-                    border: 1px solid #e7dcc4;
+                    background: var(--blue-soft);
+                    border: 1px solid var(--border);
                     border-radius: 10px;
                     padding: 12px 14px;
-                    color: #202020;
+                    color: var(--text);
                     font: inherit;
                 }
                 .market-price-form-react-label {
                     display: block;
                     margin-bottom: 8px;
-                    color: #1b4d22;
+                    color: var(--green-ink);
                     font-size: 0.82rem;
                     letter-spacing: 0.08em;
                     text-transform: uppercase;
@@ -87,7 +88,7 @@ export default function MarketPriceFormApp({ mode = 'create', price = null, csrf
                     gap: 12px;
                     flex-wrap: wrap;
                     padding-top: 18px;
-                    border-top: 1px solid #efe7d7;
+                    border-top: 1px solid var(--blue-soft);
                 }
                 .market-price-form-react-button {
                     border: none;
@@ -99,13 +100,13 @@ export default function MarketPriceFormApp({ mode = 'create', price = null, csrf
                     text-decoration: none;
                 }
                 .market-price-form-react-button.primary {
-                    background: #1b4d22;
+                    background: var(--green);
                     color: white;
                 }
                 .market-price-form-react-button.secondary {
-                    background: #edf4ec;
-                    color: #1b4d22;
-                    border: 1px solid rgba(27,77,34,0.1);
+                    background: var(--green-soft);
+                    color: var(--green-ink);
+                    border: 1px solid rgba(var(--green-rgb), 0.1);
                 }
                 .market-price-form-react-input-wrap {
                     position: relative;
@@ -115,7 +116,7 @@ export default function MarketPriceFormApp({ mode = 'create', price = null, csrf
                     inset: 0 auto 0 12px;
                     display: flex;
                     align-items: center;
-                    color: #6f6845;
+                    color: var(--text-muted);
                     font-weight: 700;
                 }
                 .market-price-form-react-input-wrap input {
@@ -135,7 +136,7 @@ export default function MarketPriceFormApp({ mode = 'create', price = null, csrf
                 <div className="market-price-form-react-shell">
                     <a href="/admin/market-prices" className="market-price-form-react-back">← Back to Price Management</a>
 
-                    <div className="market-price-form-react-card">
+                    <div className="market-price-form-react-card animate-fade-in-up">
                         <h1>{isEdit ? 'Edit Market Price' : 'Add New Market Price'}</h1>
                         <p>{isEdit ? 'Update the pricing and location details for this record.' : 'Enter the details to add a new rice variety record to the live market map.'}</p>
 
@@ -177,11 +178,11 @@ export default function MarketPriceFormApp({ mode = 'create', price = null, csrf
                                 </div>
 
                                 <div>
-                                    <label className="market-price-form-react-label" htmlFor="change_percent">Change (%)</label>
-                                    <div className="market-price-form-react-input-wrap">
-                                        <input id="change_percent" className="market-price-form-react-field" type="number" step="0.01" name="change_percent" defaultValue={currentPrice.change_percent} placeholder="0.00" />
-                                        <span className="prefix" style={{ left: 'auto', right: '12px' }}>%</span>
-                                    </div>
+                                    <label className="market-price-form-react-label" htmlFor="recorded_on">Price Date</label>
+                                    <input id="recorded_on" className="market-price-form-react-field" type="date" name="recorded_on" defaultValue={currentPrice.recorded_on || today} max={today} />
+                                    <small style={{ display: 'block', marginTop: 6, color: 'var(--text-muted)' }}>
+                                        The change % is calculated automatically from this market&apos;s previous price.
+                                    </small>
                                 </div>
                             </div>
 

@@ -5,7 +5,7 @@
         id="react-app"
         data-page="market-prices-admin"
         data-csrf="{{ csrf_token() }}"
-        data-prices='@json($prices->map(function ($price) { return [
+        data-prices='{{ json_encode($prices->map(function ($price) { return [
             "id" => $price->id,
             "rice_variety" => $price->rice_variety,
             "rice_type" => $price->rice_type,
@@ -13,6 +13,6 @@
             "market" => $price->market,
             "price_per_kg" => (float) $price->price_per_kg,
             "change_percent" => (float) $price->change_percent,
-        ]; })->all())'>
+        ]; })->all()) }}'>
     </div>
 @endsection

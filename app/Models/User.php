@@ -27,10 +27,22 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
         ];
     }
 
     public function usersCoolPosts(){
         return $this->hasMany(Post::class, 'user_id');
+    }
+
+    public function priceAlerts()
+    {
+        return $this->hasMany(PriceAlert::class);
+    }
+
+    // Owner of the record, or an admin moderating it.
+    public function canManage($model): bool
+    {
+        return $this->is_admin || $this->id === $model->user_id;
     }
 }

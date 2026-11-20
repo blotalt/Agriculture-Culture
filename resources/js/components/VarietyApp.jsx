@@ -1,8 +1,9 @@
 import React from 'react';
+import { t } from '../i18n.js';
 
 const formatDemand = (value) => value || 'Medium';
 
-export default function VarietyApp({ varieties = [], totalCount = 0, highDemandCount = 0, filters = {} }) {
+export default function VarietyApp({ varieties = [], totalCount = 0, highDemandCount = 0, filters = {}, pagination = { current: 1, last: 1 } }) {
     const currentType = filters.type || 'All Types';
     const currentSortLabel = filters.sort === 'za' ? 'Z–A' : 'A–Z';
     const currentSearch = filters.search || '';
@@ -36,12 +37,12 @@ export default function VarietyApp({ varieties = [], totalCount = 0, highDemandC
         <>
             <style>{`
                 .variety-react-wrap {
-                    background: #faf6ee;
-                    color: #202020;
-                    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+                    background: var(--bg);
+                    color: var(--text);
+                    font-family: var(--font-body);
                 }
                 .variety-react-wrap .hero-band {
-                    background: #1b4d22;
+                    background: var(--green);
                     color: white;
                     padding: 38px 0 32px;
                 }
@@ -61,12 +62,31 @@ export default function VarietyApp({ varieties = [], totalCount = 0, highDemandC
                     margin: 6px 0 8px;
                     font-size: clamp(2.4rem, 4vw, 3.2rem);
                     font-weight: 800;
-                    font-family: Georgia, "Times New Roman", serif;
+                    font-family: var(--font-heading);
                 }
                 .variety-react-wrap .subtext {
                     color: rgba(255,255,255,0.77);
                     margin: 0;
                     font-size: 1.06rem;
+                }
+                .variety-react-wrap .tool-links {
+                    display: flex;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                    margin-top: 16px;
+                }
+                .variety-react-wrap .tool-links a {
+                    background: rgba(255,255,255,0.12);
+                    border: 1px solid rgba(255,255,255,0.2);
+                    color: white;
+                    text-decoration: none;
+                    border-radius: 999px;
+                    padding: 7px 14px;
+                    font-weight: 700;
+                    font-size: 0.88rem;
+                }
+                .variety-react-wrap .tool-links a:hover {
+                    background: var(--gold);
                 }
                 .variety-react-wrap .stats-box {
                     display: flex;
@@ -90,10 +110,10 @@ export default function VarietyApp({ varieties = [], totalCount = 0, highDemandC
                 }
                 .variety-react-wrap .stat-item h3 {
                     margin: 0;
-                    color: #f4c84f;
+                    color: var(--gold-light);
                     font-weight: 800;
                     font-size: 1.8rem;
-                    font-family: Georgia, "Times New Roman", serif;
+                    font-family: var(--font-heading);
                 }
                 .variety-react-wrap .stat-item small {
                     color: rgba(255,255,255,0.7);
@@ -119,13 +139,13 @@ export default function VarietyApp({ varieties = [], totalCount = 0, highDemandC
                 .variety-react-wrap .search-box input {
                     width: 100%;
                     border: none;
-                    background: #f3ece0;
+                    background: var(--blue-soft);
                     border-radius: 999px;
                     padding: 12px 18px 12px 42px;
                     font-size: 1rem;
-                    color: #202020;
+                    color: var(--text);
                     outline: none;
-                    box-shadow: inset 0 0 0 1px rgba(27,77,34,0.08);
+                    box-shadow: inset 0 0 0 1px rgba(var(--green-rgb), 0.08);
                 }
                 .variety-react-wrap .search-icon {
                     position: absolute;
@@ -142,8 +162,8 @@ export default function VarietyApp({ varieties = [], totalCount = 0, highDemandC
                 }
                 .variety-react-wrap .type-pill {
                     display: inline-block;
-                    background: #f0e6d2;
-                    color: #555;
+                    background: var(--blue-soft);
+                    color: var(--text-muted);
                     border-radius: 999px;
                     padding: 8px 16px;
                     text-decoration: none;
@@ -151,19 +171,19 @@ export default function VarietyApp({ varieties = [], totalCount = 0, highDemandC
                     transition: 0.15s ease;
                 }
                 .variety-react-wrap .type-pill.active {
-                    background: #1b4d22;
+                    background: var(--green);
                     color: white;
                 }
                 .variety-react-wrap .sort-box {
                     display: inline-flex;
                     align-items: center;
                     gap: 8px;
-                    background: #f3ece0;
+                    background: var(--blue-soft);
                     border: none;
                     border-radius: 10px;
                     padding: 10px 14px;
                     text-decoration: none;
-                    color: #1b4d22;
+                    color: var(--green-ink);
                     font-weight: 700;
                 }
                 .variety-react-wrap .grid {
@@ -172,7 +192,7 @@ export default function VarietyApp({ varieties = [], totalCount = 0, highDemandC
                     gap: 20px;
                 }
                 .variety-react-wrap .card {
-                    background: white;
+                    background: var(--surface);
                     border: none;
                     border-radius: 18px;
                     overflow: hidden;
@@ -194,7 +214,7 @@ export default function VarietyApp({ varieties = [], totalCount = 0, highDemandC
                     position: absolute;
                     top: 14px;
                     left: 14px;
-                    background: #1b4d22;
+                    background: var(--green);
                     color: white;
                     border-radius: 999px;
                     padding: 6px 12px;
@@ -215,10 +235,10 @@ export default function VarietyApp({ varieties = [], totalCount = 0, highDemandC
                     margin: 0;
                     font-size: 1.12rem;
                     font-weight: 800;
-                    color: #1b4d22;
+                    color: var(--green-ink);
                 }
                 .variety-react-wrap .subtitle {
-                    color: #6f6845;
+                    color: var(--text-muted);
                     font-size: 0.82rem;
                     margin: 0;
                 }
@@ -226,15 +246,15 @@ export default function VarietyApp({ varieties = [], totalCount = 0, highDemandC
                     display: inline-flex;
                     align-items: center;
                     justify-content: center;
-                    background: #e3f3e6;
-                    color: #107c41;
+                    background: var(--green-soft);
+                    color: var(--success);
                     border-radius: 999px;
                     padding: 6px 10px;
                     font-size: 0.72rem;
                     font-weight: 800;
                 }
                 .variety-react-wrap .description {
-                    color: #6f6845;
+                    color: var(--text-muted);
                     line-height: 1.7;
                     margin: 12px 0 18px;
                     font-size: 0.92rem;
@@ -244,7 +264,7 @@ export default function VarietyApp({ varieties = [], totalCount = 0, highDemandC
                     justify-content: space-between;
                     align-items: center;
                     gap: 12px;
-                    border-top: 1px solid #f0eadf;
+                    border-top: 1px solid var(--blue-soft);
                     padding-top: 14px;
                 }
                 .variety-react-wrap .meta-stat {
@@ -254,15 +274,15 @@ export default function VarietyApp({ varieties = [], totalCount = 0, highDemandC
                 .variety-react-wrap .meta-stat strong {
                     display: block;
                     font-size: 0.8rem;
-                    color: #1b4d22;
+                    color: var(--green-ink);
                 }
                 .variety-react-wrap .meta-stat span {
-                    color: #6f6845;
+                    color: var(--text-muted);
                     font-size: 0.7rem;
                 }
                 .variety-react-wrap .view-btn {
                     display: inline-block;
-                    background: #1b4d22;
+                    background: var(--green);
                     color: white;
                     padding: 9px 16px;
                     border-radius: 999px;
@@ -285,19 +305,19 @@ export default function VarietyApp({ varieties = [], totalCount = 0, highDemandC
                     height: 38px;
                     padding: 0 12px;
                     border-radius: 8px;
-                    background: #eef4ef;
-                    color: #1b4d22;
+                    background: var(--green-soft);
+                    color: var(--green-ink);
                     text-decoration: none;
                     font-weight: 700;
                 }
                 .variety-react-wrap .page-link.active {
-                    background: #1b4d22;
+                    background: var(--green);
                     color: white;
                 }
                 .variety-react-wrap .empty-state {
                     text-align: center;
                     padding: 32px 0;
-                    color: #6f6845;
+                    color: var(--text-muted);
                     font-size: 1.1rem;
                 }
                 @media (max-width: 960px) {
@@ -322,8 +342,13 @@ export default function VarietyApp({ varieties = [], totalCount = 0, highDemandC
                 <section className="hero-band">
                     <div className="inner hero-row">
                         <div>
-                            <h1>Rice Varieties</h1>
-                            <p className="subtext">Explore Cambodia&apos;s diverse rice varieties and market demand</p>
+                            <h1>{t('variety.title')}</h1>
+                            <p className="subtext">{t('variety.subtitle')}</p>
+                            <div className="tool-links">
+                                <a href="/variety/recommend">🌱 {t('nav.recommend')}</a>
+                                <a href="/variety/compare">⚖️ {t('nav.compare')}</a>
+                                <a href="/calendar">📅 {t('nav.calendar')}</a>
+                            </div>
                         </div>
 
                         <div className="stats-box">
@@ -396,7 +421,7 @@ export default function VarietyApp({ varieties = [], totalCount = 0, highDemandC
                             </div>
                         ) : (
                             varieties.map((rice) => (
-                                <article className="card" key={rice.id}>
+                                <article className="card animate-fade-in-up hover-lift" key={rice.id}>
                                     <div className="image-wrap">
                                         <img src={rice.image ? `/storage/${rice.image}` : '/images/extra/ricefields.png'} alt={rice.name} />
                                         <span className="badge-type">{rice.type}</span>
@@ -406,7 +431,7 @@ export default function VarietyApp({ varieties = [], totalCount = 0, highDemandC
                                         <div className="title-row">
                                             <div>
                                                 <h5>{rice.name}</h5>
-                                                <p className="subtitle">{rice.khmer_name} • {rice.location}</p>
+                                                <p className="subtitle"><span lang="km">{rice.khmer_name}</span> • {rice.location}</p>
                                             </div>
                                             <span className="demand-badge">{formatDemand(rice.demand)}</span>
                                         </div>
@@ -426,7 +451,7 @@ export default function VarietyApp({ varieties = [], totalCount = 0, highDemandC
                                                 <strong>{rice.season}</strong>
                                                 <span>Season</span>
                                             </div>
-                                            <a className="view-btn" href="#">View Details</a>
+                                            <a className="view-btn" href={`/variety/compare?ids[]=${rice.id}`}>{t('variety.details')}</a>
                                         </div>
                                     </div>
                                 </article>
@@ -434,17 +459,14 @@ export default function VarietyApp({ varieties = [], totalCount = 0, highDemandC
                         )}
                     </div>
 
-                    {varieties.length > 0 && (
+                    {pagination.last > 1 && (
                         <div className="pagination">
-                            {Array.from({ length: Math.max(1, Math.ceil(varieties.length / 9)) }, (_, index) => (
+                            {Array.from({ length: pagination.last }, (_, index) => (
                                 <a
                                     key={index + 1}
-                                    href={(() => {
-                                        const params = new URLSearchParams(window.location.search);
-                                        params.set('page', index + 1);
-                                        return `?${params.toString()}`;
-                                    })()}
-                                    className={`page-link ${index + 1 === 1 ? 'active' : ''}`}
+                                    href={buildQueryString({ page: index + 1 })}
+                                    className={`page-link ${index + 1 === pagination.current ? 'active' : ''}`}
+                                    aria-current={index + 1 === pagination.current ? 'page' : undefined}
                                 >
                                     {index + 1}
                                 </a>

@@ -1,0 +1,33 @@
+services:
+  app:
+    build: .
+    container_name: agriculture-culture-app
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    ports:
+      - "8000:8000"
+    environment:
+      # Inside the container 127.0.0.1 is the container itself; this reaches MySQL on your PC.
+      DB_HOST: host.docker.internal
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    # Not `artisan serve`: it strips env vars like DB_HOST before starting the server.
+    # server.php finds index.php through the current directory, so start it from public/.
+    command: sh -c "cd public && exec php -S 0.0.0.0:8000 ../vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php"
+    restart: unless-stopped
+
+  # Runs scheduled jobs: the weekly WFP price import (which also triggers price alerts)
+  # and the 3-hourly weather refresh. See routes/console.php.
+  scheduler:
+    build: .
+    container_name: agriculture-culture-scheduler
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    environment:
+      DB_HOST: host.docker.internal
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: php artisan schedule:work
+    restart: unless-stopped

@@ -7,12 +7,12 @@ export default function EditPostApp({ post = {}, csrfToken = '' }) {
         <>
             <style>{`
                 .edit-post-react-wrap {
-                    background: #faf6ee;
-                    color: #202020;
-                    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+                    background: var(--bg);
+                    color: var(--text);
+                    font-family: var(--font-body);
                 }
                 .edit-post-react-wrap .hero-band {
-                    background: #1b4d22;
+                    background: var(--green);
                     color: white;
                     padding: 38px 0 32px;
                 }
@@ -22,7 +22,7 @@ export default function EditPostApp({ post = {}, csrfToken = '' }) {
                     padding: 0 24px;
                 }
                 .edit-post-react-wrap .eyebrow {
-                    color: #f4c84f;
+                    color: var(--gold-light);
                     font-size: 0.78rem;
                     font-weight: 800;
                     letter-spacing: 0.12em;
@@ -32,7 +32,7 @@ export default function EditPostApp({ post = {}, csrfToken = '' }) {
                     margin: 10px 0 0;
                     font-size: clamp(2.3rem, 4vw, 3.2rem);
                     font-weight: 800;
-                    font-family: Georgia, "Times New Roman", serif;
+                    font-family: var(--font-heading);
                 }
                 .edit-post-react-wrap .content {
                     max-width: 920px;
@@ -40,8 +40,8 @@ export default function EditPostApp({ post = {}, csrfToken = '' }) {
                     padding: 36px 24px 80px;
                 }
                 .edit-post-react-wrap .panel {
-                    background: white;
-                    border: 1px solid rgba(27,77,34,0.08);
+                    background: var(--surface);
+                    border: 1px solid rgba(var(--green-rgb), 0.08);
                     border-radius: 18px;
                     box-shadow: 0 14px 32px rgba(0,0,0,0.05);
                     padding: 28px;
@@ -55,18 +55,18 @@ export default function EditPostApp({ post = {}, csrfToken = '' }) {
                     font-size: 0.83rem;
                     letter-spacing: 0.08em;
                     text-transform: uppercase;
-                    color: #1b4d22;
+                    color: var(--green-ink);
                     font-weight: 800;
                     margin-bottom: 8px;
                 }
                 .edit-post-react-wrap .field,
                 .edit-post-react-wrap .file-field {
                     width: 100%;
-                    border: 1px solid #e7dcc4;
-                    background: #f7f1e3;
+                    border: 1px solid var(--border);
+                    background: var(--blue-soft);
                     border-radius: 10px;
                     padding: 12px 14px;
-                    color: #202020;
+                    color: var(--text);
                     font: inherit;
                 }
                 .edit-post-react-wrap textarea.field {
@@ -74,11 +74,11 @@ export default function EditPostApp({ post = {}, csrfToken = '' }) {
                     resize: vertical;
                 }
                 .edit-post-react-wrap .image-box {
-                    background: #f9f6ef;
-                    border: 1px dashed rgba(27,77,34,0.22);
+                    background: var(--bg);
+                    border: 1px dashed rgba(var(--green-rgb), 0.22);
                     border-radius: 12px;
                     padding: 16px;
-                    color: #4d4d4d;
+                    color: var(--text-muted);
                 }
                 .edit-post-react-wrap .image-box img {
                     max-height: 180px;
@@ -91,7 +91,7 @@ export default function EditPostApp({ post = {}, csrfToken = '' }) {
                     display: flex;
                     align-items: center;
                     gap: 10px;
-                    color: #4c4a3d;
+                    color: var(--text-muted);
                     font-weight: 600;
                 }
                 .edit-post-react-wrap .actions {
@@ -101,8 +101,8 @@ export default function EditPostApp({ post = {}, csrfToken = '' }) {
                     margin-top: 8px;
                 }
                 .edit-post-react-wrap .btn-gold {
-                    background: #f4c84f;
-                    color: #1b4d22;
+                    background: var(--gold-light);
+                    color: var(--on-gold);
                     border: none;
                     border-radius: 10px;
                     padding: 12px 20px;
@@ -112,9 +112,9 @@ export default function EditPostApp({ post = {}, csrfToken = '' }) {
                     display: inline-block;
                 }
                 .edit-post-react-wrap .btn-light {
-                    background: #eef3ea;
-                    color: #1b4d22;
-                    border: 1px solid rgba(27,77,34,0.1);
+                    background: var(--green-soft);
+                    color: var(--green-ink);
+                    border: 1px solid rgba(var(--green-rgb), 0.1);
                     border-radius: 10px;
                     padding: 12px 20px;
                     font-weight: 800;
@@ -122,9 +122,9 @@ export default function EditPostApp({ post = {}, csrfToken = '' }) {
                     display: inline-block;
                 }
                 .edit-post-react-wrap .btn-danger {
-                    background: #fff;
-                    color: #b42318;
-                    border: 1px solid #f7c8c1;
+                    background: var(--surface);
+                    color: var(--danger);
+                    border: 1px solid var(--danger-border);
                     border-radius: 10px;
                     padding: 12px 20px;
                     font-weight: 800;
@@ -143,19 +143,19 @@ export default function EditPostApp({ post = {}, csrfToken = '' }) {
                 }
                 .edit-post-react-wrap .modal-card {
                     width: min(460px, 100%);
-                    background: white;
+                    background: var(--surface);
                     border-radius: 18px;
                     box-shadow: 0 22px 48px rgba(0,0,0,0.18);
                     padding: 28px 24px 20px;
                 }
                 .edit-post-react-wrap .modal-title {
                     margin: 0 0 12px;
-                    color: #1b4d22;
+                    color: var(--green-ink);
                     font-size: 1.7rem;
                 }
                 .edit-post-react-wrap .modal-text {
                     margin: 0;
-                    color: #4d4d4d;
+                    color: var(--text-muted);
                     line-height: 1.7;
                 }
                 .edit-post-react-wrap .modal-actions {
@@ -176,7 +176,7 @@ export default function EditPostApp({ post = {}, csrfToken = '' }) {
                 </section>
 
                 <section className="content">
-                    <div className="panel">
+                    <div className="panel animate-fade-in-up">
                         <form action={`/edit-post/${post.id}`} method="POST" encType="multipart/form-data" className="form-grid">
                             <input type="hidden" name="_token" value={csrfToken} />
                             <input type="hidden" name="_method" value="PUT" />
@@ -219,7 +219,7 @@ export default function EditPostApp({ post = {}, csrfToken = '' }) {
             </div>
 
             <div id="delete-modal" style={{ display: 'none' }} className="modal-backdrop">
-                <div className="modal-card">
+                <div className="modal-card animate-fade-in-up">
                     <h3 className="modal-title">Delete Post</h3>
                     <p className="modal-text">Are you sure you want to delete this post? This action cannot be undone.</p>
                     <div className="modal-actions">

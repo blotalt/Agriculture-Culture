@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2b7049">
+    <title>Offline · KhmerRice</title>
+    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+    <style>
+        body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #f6fafd; color: #1d2b36; font-family: Georgia, "Times New Roman", serif; padding: 16px; box-sizing: border-box; }
+        main { max-width: 420px; text-align: center; }
+        .mark { width: 76px; height: 76px; display: block; margin: 0 auto 18px; }
+        h1 { color: #2b7049; margin: 0 0 10px; }
+        p { color: #5a6b78; line-height: 1.6; margin: 0 0 8px; }
+        a, button { display: inline-block; margin-top: 16px; background: #2b7049; color: #fff; border: none; border-radius: 10px; padding: 11px 20px; font: inherit; font-weight: 700; text-decoration: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <main>
+        <img class="mark" src="/icons/icon.svg" alt="KhmerRice" width="76" height="76">
+        <h1>You're offline</h1>
+        <p>This page hasn't been saved on your device yet. Pages you've opened before, like Market Prices, still work without a connection.</p>
+        <p lang="km">អ្នកមិនមានអ៊ីនធឺណិតទេ។ ទំព័រដែលអ្នកធ្លាប់បើក ដូចជាតម្លៃទីផ្សារ នៅតែអាចមើលបាន។</p>
+        <a href="/pricemarket">Market prices</a>
+        <button type="button" onclick="location.reload()">Try again</button>
+    </main>
+</body>
+</html>
